@@ -1,0 +1,17 @@
+[
+  {
+    "name": "billing route",
+    "input": "I was charged twice on my invoice and need a refund.",
+    "expected_substring": "billing"
+  },
+  {
+    "name": "technical route",
+    "input": "The app crashes with a stack trace after I upload a file.",
+    "expected_substring": "technical"
+  },
+  {
+    "name": "account route",
+    "input": "I can't sign in and need help resetting access.",
+    "expected_substring": "account"
+  }
+]

@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "scenario_count": 5,
+  "passed_count": 5,
+  "results": [
+    {
+      "app": "chat_assistant",
+      "name": "pricing guidance",
+      "passed": true,
+      "output": "Our example stack is Python-first: FastAPI, uvicorn, and the OpenAI Agents SDK.",
+      "expected_substring": "Python-first",
+      "agent_name": "Chat Assistant",
+      "meta": {
+        "mode": "fake"
+      }
+    },
+    {
+      "app": "chat_assistant",
+      "name": "verification guidance",
+      "passed": true,
+      "output": "Run tracecore-openai-verify to execute deterministic local verification scenarios.",
+      "expected_substring": "tracecore-openai-verify",
+      "agent_name": "Chat Assistant",
+      "meta": {
+        "mode": "fake"
+      }
+    },
+    {
+      "app": "support_triage",
+      "name": "billing route",
+      "passed": true,
+      "output": "Route to billing queue. Summary: I was charged twice on my invoice and need a refund.",
+      "expected_substring": "billing",
+      "agent_name": "Support Triage",
+      "meta": {
+        "mode": "fake",
+        "route": "billing"
+      }
+    },
+    {
+      "app": "support_triage",
+      "name": "technical route",
+      "passed": true,
+      "output": "Route to technical queue. Summary: The app crashes with a stack trace after I upload a file.",
+      "expected_substring": "technical",
+      "agent_name": "Support Triage",
+      "meta": {
+        "mode": "fake",
+        "route": "technical"
+      }
+    },
+    {
+      "app": "support_triage",
+      "name": "account route",
+      "passed": true,
+      "output": "Route to account queue. Summary: I can't sign in and need help resetting access.",
+      "expected_substring": "account",
+      "agent_name": "Support Triage",
+      "meta": {
+        "mode": "fake",
+        "route": "account"
+      }
+    }
+  ]
+}

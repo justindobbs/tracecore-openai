@@ -1,0 +1,12 @@
+[
+  {
+    "name": "pricing guidance",
+    "input": "How does pricing work for these examples?",
+    "expected_substring": "Python-first"
+  },
+  {
+    "name": "verification guidance",
+    "input": "How do I verify an app with TraceCore?",
+    "expected_substring": "tracecore-openai-verify"
+  }
+]

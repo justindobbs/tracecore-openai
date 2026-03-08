@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tracecore-openai"
+version = "0.1.0"
+description = "OpenAI Agents SDK example apps verified with TraceCore-oriented workflows."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Justin Dobbs" }]
+dependencies = [
+    "fastapi>=0.131",
+    "uvicorn>=0.27",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.9",
+    "pydantic>=2.7",
+    "httpx>=0.27",
+    "openai-agents>=0.10.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0",
+    "ruff>=0.9.0",
+]
+
+[project.scripts]
+tracecore-openai = "tracecore_openai.main:cli"
+tracecore-openai-verify = "tracecore_openai.verify:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E501"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tracecore_openai", "tracecore_openai.*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"tracecore_openai" = [
+    "templates/*.html",
+    "evals/scenarios/*.json",
+]

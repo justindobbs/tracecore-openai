@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>TraceCore OpenAI</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem auto; max-width: 960px; line-height: 1.5; }
+    h1, h2 { margin-bottom: 0.25rem; }
+    form { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    textarea, input, select { width: 100%; padding: 0.6rem; margin-top: 0.35rem; margin-bottom: 0.8rem; }
+    button { padding: 0.7rem 1rem; }
+    .hint { color: #555; font-size: 0.95rem; }
+    .mono { font-family: Consolas, monospace; background: #f6f6f6; padding: 0.15rem 0.3rem; }
+  </style>
+</head>
+<body>
+  <h1>TraceCore OpenAI</h1>
+  <p class="hint">FastAPI example apps using the OpenAI Agents SDK with deterministic local verification.</p>
+
+  <h2>Chat Assistant</h2>
+  <form method="post" action="/api/chat-assistant">
+    <label for="chat-message">Message</label>
+    <textarea id="chat-message" name="message" rows="4" placeholder="Ask a product or onboarding question"></textarea>
+    <button type="submit">Send to chat assistant</button>
+  </form>
+
+  <h2>Support Triage</h2>
+  <form method="post" action="/api/support-triage">
+    <label for="triage-message">Support issue</label>
+    <textarea id="triage-message" name="message" rows="4" placeholder="Describe the issue"></textarea>
+    <button type="submit">Route issue</button>
+  </form>
+
+  <p class="hint">Deterministic verification mode is controlled with <span class="mono">TRACECORE_OPENAI_FAKE_RUNNER=1</span>.</p>
+</body>
+</html>
