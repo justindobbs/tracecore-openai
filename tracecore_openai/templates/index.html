@@ -51,25 +51,105 @@
       z-index: 1;
     }
 
-    .hero,
-    .panel,
+    .dashboard {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .sidebar,
+    .topbar,
+    .section-card,
     .form-card,
-    .result-card {
+    .result-card,
+    .panel {
       border: 1px solid var(--line);
       background: var(--panel);
       box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
     }
 
-    .hero {
-      padding: 28px;
+    .sidebar {
+      position: sticky;
+      top: 18px;
       border-radius: 24px;
-      overflow: hidden;
-      position: relative;
-      margin-bottom: 20px;
+      padding: 20px;
+      min-height: calc(100vh - 46px);
     }
 
-    .hero::after {
+    .brand {
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(86, 246, 255, 0.14);
+    }
+
+    .brand h1 {
+      font-size: 1.45rem;
+      max-width: none;
+      margin-bottom: 8px;
+    }
+
+    .brand p {
+      font-size: 0.94rem;
+    }
+
+    .nav-group {
+      margin-bottom: 18px;
+    }
+
+    .nav-label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--pink);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 14px;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+      margin-bottom: 8px;
+    }
+
+    .nav-link:hover {
+      background: rgba(86, 246, 255, 0.08);
+      border-color: rgba(86, 246, 255, 0.16);
+      transform: translateX(2px);
+    }
+
+    .sidebar-note {
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(7, 15, 30, 0.88);
+      border: 1px solid rgba(255, 79, 216, 0.18);
+    }
+
+    .main {
+      min-width: 0;
+    }
+
+    .topbar {
+      border-radius: 24px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .topbar-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .topbar::after {
       content: "TRACECORE VERIFIED LOOP";
       position: absolute;
       right: 20px;
@@ -96,10 +176,11 @@
       line-height: 1.15;
     }
 
-    h1 {
-      font-size: clamp(2.2rem, 5vw, 4rem);
-      max-width: 820px;
-      text-shadow: 0 0 18px rgba(86, 246, 255, 0.14);
+    h1 { text-shadow: 0 0 18px rgba(86, 246, 255, 0.14); }
+
+    .headline {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      max-width: 760px;
     }
 
     p {
@@ -107,24 +188,17 @@
       color: var(--muted);
     }
 
-    .hero-copy {
+    .headline-copy {
       max-width: 760px;
-      font-size: 1.05rem;
+      font-size: 1rem;
     }
 
-    .hero-grid,
     .info-grid,
     .apps-grid,
     .steps-grid,
     .results-grid {
       display: grid;
       gap: 18px;
-    }
-
-    .hero-grid {
-      grid-template-columns: 1.6fr 1fr;
-      align-items: end;
-      gap: 24px;
     }
 
     .stats {
@@ -158,6 +232,27 @@
     .results-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       margin-top: 18px;
+    }
+
+    .section-card {
+      border-radius: 22px;
+      padding: 22px;
+      margin-top: 18px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .section-kicker {
+      color: var(--pink);
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
     }
 
     .panel {
@@ -270,6 +365,83 @@
       box-shadow: 0 0 18px rgba(86, 246, 255, 0.16);
     }
 
+    button:disabled {
+      opacity: 0.72;
+      cursor: wait;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .progress-meter {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(86, 246, 255, 0.16);
+      background: rgba(2, 8, 18, 0.88);
+      display: none;
+    }
+
+    .progress-meter.active {
+      display: block;
+    }
+
+    .progress-meter.done {
+      border-color: rgba(182, 255, 92, 0.28);
+    }
+
+    .progress-meter.error {
+      border-color: rgba(255, 157, 61, 0.3);
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(86, 246, 255, 0.08);
+      overflow: hidden;
+      border: 1px solid rgba(86, 246, 255, 0.12);
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(86, 246, 255, 0.95), rgba(255, 79, 216, 0.95));
+      box-shadow: 0 0 16px rgba(86, 246, 255, 0.18);
+      transition: width 0.25s ease;
+    }
+
+    .progress-meter.active .progress-fill.is-animating {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-meter.active .progress-fill.is-animating::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: progressSweep 1.15s linear infinite;
+    }
+
+    @keyframes progressSweep {
+      from {
+        transform: translateX(-100%);
+      }
+      to {
+        transform: translateX(220%);
+      }
+    }
+
     .hint {
       color: var(--muted);
       font-size: 0.95rem;
@@ -328,7 +500,8 @@
     .accent-warn { color: var(--warn); }
 
     @media (max-width: 920px) {
-      .hero-grid,
+      .dashboard,
+      .topbar-grid,
       .info-grid,
       .apps-grid,
       .steps-grid,
@@ -336,7 +509,12 @@
         grid-template-columns: 1fr;
       }
 
-      .hero::after {
+      .sidebar {
+        position: static;
+        min-height: auto;
+      }
+
+      .topbar::after {
         position: static;
         display: block;
         margin-top: 16px;
@@ -346,65 +524,111 @@
 </head>
 <body>
   <main class="shell">
-    <section class="hero">
-      <div class="hero-grid">
-        <div>
-          <span class="eyebrow">FastAPI + OpenAI Agents SDK</span>
-          <h1>Cyberpunk example apps with a TraceCore verification loop built in.</h1>
-          <p class="hero-copy">This workspace is meant to feel like a guided proving ground: you run an agent app locally, understand what it is doing, inspect how it responds, and validate deterministic scenarios before you trust the experience.</p>
-          <div class="chips">
-            <span class="chip"><strong>Run</strong> start the FastAPI app locally</span>
-            <span class="chip"><strong>Try</strong> send a prompt through the UI</span>
-            <span class="chip"><strong>Verify</strong> execute deterministic checks</span>
-            <span class="chip"><strong>Inspect</strong> review generated artifacts</span>
-          </div>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="eyebrow">TraceCore OpenAI</span>
+          <h1>Agent Dashboard</h1>
+          <p>App surfaces, verification flow, runtime notes, and artifact-aware iteration in one place.</p>
         </div>
-        <div class="stats">
-          <div class="stat">
-            <strong>2</strong>
-            <span>example app surfaces live in this starter repo</span>
+
+        <nav>
+          <div class="nav-group">
+            <span class="nav-label">Sections</span>
+            <a class="nav-link" href="#overview">Overview</a>
+            <a class="nav-link" href="#apps">Apps</a>
+            <a class="nav-link" href="#results">Result Stream</a>
+            <a class="nav-link" href="#verification">Verification</a>
+            <a class="nav-link" href="#next-steps">Next Steps</a>
           </div>
-          <div class="stat">
-            <strong>5</strong>
-            <span>deterministic verification scenarios currently exercised</span>
+
+          <div class="nav-group">
+            <span class="nav-label">Commands</span>
+            <a class="nav-link" href="#verification">`tracecore-openai-verify`</a>
+            <a class="nav-link" href="#verification">`python -m pytest`</a>
+            <a class="nav-link" href="#verification">`python -m ruff check .`</a>
           </div>
-          <div class="stat">
-            <strong>FastAPI</strong>
-            <span>simple local runtime, no Docker required for LLM calls</span>
-          </div>
-          <div class="stat">
-            <strong>TraceCore</strong>
-            <span>verification-first workflow instead of vibes-only demos</span>
-          </div>
+        </nav>
+
+        <div class="sidebar-note">
+          <strong class="accent-cyan">Current mode</strong>
+          <p>Use <span class="mono">TRACECORE_OPENAI_FAKE_RUNNER=1</span> for deterministic local checks before live model calls.</p>
         </div>
-      </div>
-    </section>
+      </aside>
 
-    <section class="info-grid">
-      <article class="panel">
-        <h2>What you are looking at</h2>
-        <p>This repo adapts OpenAI Agents SDK patterns into app-like examples with a local UX and an explicit validation story. The goal is not just to show prompts working once, but to explain the path from demo behavior to repeatable verification.</p>
-        <ul class="signal-list">
-          <li><span class="accent-cyan">Chat Assistant</span> is a lightweight single-agent surface for onboarding, product guidance, and basic question handling.</li>
-          <li><span class="accent-pink">Support Triage</span> demonstrates multi-agent routing logic for billing, technical, and account-style issues.</li>
-          <li><span class="accent-warn">Deterministic verification mode</span> makes local validation cheap and repeatable before live-model testing.</li>
-        </ul>
-      </article>
+      <section class="main">
+        <section class="topbar" id="overview">
+          <div class="topbar-grid">
+            <div>
+              <span class="eyebrow">FastAPI + OpenAI Agents SDK</span>
+              <h2 class="headline">A TraceCore-style dashboard for trying agent apps, validating them, and understanding what happens next.</h2>
+              <p class="headline-copy">This workspace is meant to feel operational rather than promotional: you can run the example surfaces, inspect live responses, understand how verification is being applied, and iterate toward richer agent apps.</p>
+              <div class="chips">
+                <span class="chip"><strong>Run</strong> start the local app</span>
+                <span class="chip"><strong>Try</strong> exercise the app surfaces</span>
+                <span class="chip"><strong>Verify</strong> run deterministic checks</span>
+                <span class="chip"><strong>Inspect</strong> read verification outputs</span>
+              </div>
+            </div>
+            <div class="stats">
+              <div class="stat">
+                <strong>2</strong>
+                <span>example app surfaces live in this starter repo</span>
+              </div>
+              <div class="stat">
+                <strong>5</strong>
+                <span>deterministic verification scenarios currently exercised</span>
+              </div>
+              <div class="stat">
+                <strong>FastAPI</strong>
+                <span>simple local runtime, no Docker required for LLM calls</span>
+              </div>
+              <div class="stat">
+                <strong>TraceCore</strong>
+                <span>verification-first workflow instead of vibes-only demos</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      <article class="panel">
-        <h2>TraceCore workflow</h2>
-        <ol class="step-list">
-          <li>Run the app locally with <span class="mono">uvicorn tracecore_openai.main:app --reload</span>.</li>
-          <li>Exercise the routes in this UI to understand the intended behavior.</li>
-          <li>Run <span class="mono">tracecore-openai-verify</span> to execute deterministic scenarios.</li>
-          <li>Inspect <span class="mono">deliverables/verification/latest.json</span> to confirm the expected outputs were observed.</li>
-          <li>Only then move into live OpenAI-backed usage and richer app expansion.</li>
-        </ol>
-      </article>
-    </section>
+        <section class="section-card">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Workspace context</div>
+              <h2>What this dashboard is showing</h2>
+            </div>
+          </div>
+          <div class="info-grid">
+            <article class="panel">
+              <h2>App surfaces</h2>
+              <p>This repo adapts OpenAI Agents SDK patterns into app-like examples with a local UX and an explicit validation story.</p>
+              <ul class="signal-list">
+                <li><span class="accent-cyan">Chat Assistant</span> is a lightweight single-agent surface for onboarding, product guidance, and basic question handling.</li>
+                <li><span class="accent-pink">Support Triage</span> demonstrates multi-agent routing logic for billing, technical, and account-style issues.</li>
+              </ul>
+            </article>
 
-    <section class="apps-grid">
-      <article class="form-card">
+            <article class="panel">
+              <h2>Operator workflow</h2>
+              <ol class="step-list">
+                <li>Run the app locally with <span class="mono">uvicorn tracecore_openai.main:app --reload</span>.</li>
+                <li>Exercise the routes in this dashboard to understand intended behavior.</li>
+                <li>Run <span class="mono">tracecore-openai-verify</span> to execute deterministic scenarios.</li>
+                <li>Inspect <span class="mono">deliverables/verification/latest.json</span> before moving deeper into live usage.</li>
+              </ol>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-card" id="apps">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Apps</div>
+              <h2>Interactive app surfaces</h2>
+            </div>
+          </div>
+          <div class="apps-grid">
+            <article class="form-card">
         <h3>Chat Assistant</h3>
         <p class="hint">Best for product help, onboarding copy, and showing the simplest OpenAI Agents SDK path.</p>
         <ul class="app-meta">
@@ -416,10 +640,19 @@
           <label for="chat-message">Message</label>
           <textarea id="chat-message" name="message" rows="5" placeholder="Ask a product, onboarding, or verification question"></textarea>
           <button type="submit">Run chat assistant</button>
+          <div class="progress-meter" data-progress>
+            <div class="progress-label">
+              <span data-progress-text>Preparing request...</span>
+              <span data-progress-value>0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" data-progress-fill></div>
+            </div>
+          </div>
         </form>
-      </article>
+            </article>
 
-      <article class="form-card">
+            <article class="form-card">
         <h3>Support Triage</h3>
         <p class="hint">Best for showing routing behavior and how app-facing requests can be classified before specialist handling.</p>
         <ul class="app-meta">
@@ -431,21 +664,38 @@
           <label for="triage-message">Support issue</label>
           <textarea id="triage-message" name="message" rows="5" placeholder="Describe the issue like a real end user would"></textarea>
           <button type="submit">Run support triage</button>
+          <div class="progress-meter" data-progress>
+            <div class="progress-label">
+              <span data-progress-text>Preparing request...</span>
+              <span data-progress-value>0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" data-progress-fill></div>
+            </div>
+          </div>
         </form>
-      </article>
-    </section>
+            </article>
+          </div>
+        </section>
 
-    <section class="results-grid">
-      <article class="result-card">
+        <section class="section-card" id="results">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Results</div>
+              <h2>Result stream and runtime context</h2>
+            </div>
+          </div>
+          <div class="results-grid">
+            <article class="result-card">
         <h3>Live result stream</h3>
         <div class="status-line">
           <span class="status-pill">interactive</span>
           <span>Submissions below are sent to the existing JSON API routes and rendered here for quick inspection.</span>
         </div>
         <pre id="result-output">No request submitted yet.</pre>
-      </article>
+            </article>
 
-      <article class="result-card">
+            <article class="result-card" id="verification">
         <h3>Verification and runtime notes</h3>
         <ul class="signal-list">
           <li>Set <span class="mono">TRACECORE_OPENAI_FAKE_RUNNER=1</span> when you want deterministic local runs without API spend.</li>
@@ -457,42 +707,117 @@
 tracecore-openai-verify
 python -m pytest
 python -m ruff check .</pre>
-      </article>
-    </section>
+            </article>
+          </div>
+        </section>
 
-    <section class="steps-grid">
-      <article class="panel">
+        <section class="section-card" id="next-steps">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Planning forward</div>
+              <h2>Verification meaning and next upgrades</h2>
+            </div>
+          </div>
+          <div class="steps-grid">
+            <article class="panel">
         <h2>What TraceCore testing is doing here</h2>
         <p>The starter verification harness is intentionally simple: it runs known prompts through deterministic app mode and confirms that expected outputs or routing hints show up. That gives you a stable baseline before you add more realistic tasks, validators, or benchmark-style run artifacts.</p>
-      </article>
+            </article>
 
-      <article class="panel">
+            <article class="panel">
         <h2>Where this can go next</h2>
         <p>Once this landing page and workflow feel right, the next upgrades are richer result history, inline verification status cards, scenario browsing, and direct links to generated artifacts so the user can move from demo interaction to evidence without leaving the UI.</p>
-      </article>
-    </section>
+            </article>
+          </div>
+        </section>
+      </section>
+    </div>
   </main>
 
   <script>
     const resultOutput = document.getElementById("result-output");
+    const resultsSection = document.getElementById("results");
+
+    function formatResult(payload) {
+      return JSON.stringify(payload, null, 2)
+        .replace(/\\n/g, "\n")
+        .replace(/\\t/g, "  ");
+    }
+
+    function setProgress(form, value, text, state = "active") {
+      const meter = form.querySelector("[data-progress]");
+      const fill = form.querySelector("[data-progress-fill]");
+      const progressText = form.querySelector("[data-progress-text]");
+      const progressValue = form.querySelector("[data-progress-value]");
+      if (!meter || !fill || !progressText || !progressValue) {
+        return;
+      }
+      meter.classList.add("active");
+      meter.classList.remove("done", "error");
+      if (state === "done") {
+        meter.classList.add("done");
+      }
+      if (state === "error") {
+        meter.classList.add("error");
+      }
+      const bounded = Math.max(0, Math.min(100, value));
+      fill.style.width = `${bounded}%`;
+      fill.classList.toggle("is-animating", state === "active" && bounded < 100);
+      progressText.textContent = text;
+      progressValue.textContent = `${Math.round(bounded)}%`;
+    }
+
+    function startProgressLoop(form) {
+      let current = 18;
+      setProgress(form, current, "Preparing request...");
+      return window.setInterval(() => {
+        current = Math.min(current + Math.random() * 9 + 3, 90);
+        setProgress(form, current, "Waiting for runtime response...");
+      }, 280);
+    }
+
+    function stopProgressLoop(timerId) {
+      if (timerId) {
+        window.clearInterval(timerId);
+      }
+    }
 
     async function handleSubmit(event, endpoint) {
       event.preventDefault();
       const form = event.currentTarget;
       const formData = new FormData(form);
       const message = String(formData.get("message") || "");
+      const submitButton = form.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = true;
+      }
+      if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      const progressTimer = startProgressLoop(form);
       resultOutput.textContent = "Running request...";
 
       try {
+        setProgress(form, 35, "Sending to runtime...");
         const response = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message }),
         });
+        stopProgressLoop(progressTimer);
+        setProgress(form, 78, "Formatting response...");
         const data = await response.json();
-        resultOutput.textContent = JSON.stringify(data, null, 2);
+        resultOutput.textContent = formatResult(data);
+        setProgress(form, 100, "Response ready.", "done");
       } catch (error) {
-        resultOutput.textContent = JSON.stringify({ error: String(error) }, null, 2);
+        stopProgressLoop(progressTimer);
+        resultOutput.textContent = formatResult({ error: String(error) });
+        setProgress(form, 100, "Request failed.", "error");
+      } finally {
+        stopProgressLoop(progressTimer);
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
       }
     }
 
