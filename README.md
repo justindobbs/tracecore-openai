@@ -27,34 +27,11 @@ Docker is optional. These examples call OpenAI-hosted models over HTTPS, so a no
 
 ## Quickstart
 
-### Option A: install the published TraceCore CLI
-
-Install the main `tracecore` CLI first if you want to use bundle and verification-adjacent commands from the broader TraceCore toolchain.
+Everything needed to run this example is declared in `pyproject.toml`, so once you clone the repo you can install it with a single command.
 
 ```bash
-uv tool install "tracecore[openai_agents]"
-```
-
-Or with `pip` in your virtual environment:
-
-```bash
-pip install "tracecore[openai_agents]"
-```
-
-### Option B: clone and install TraceCore from source
-
-If you want to work on the main TraceCore repo locally, clone it and install it in editable mode:
-
-```bash
-git clone https://github.com/justindobbs/Tracecore.git
-python -m venv .venv-tracecore
-.venv-tracecore\Scripts\activate
-pip install -e .[dev,openai_agents]
-```
-
-### Install and run this `tracecore-openai` example repo
-
-```bash
+git clone https://github.com/justindobbs/tracecore-openai.git
+cd tracecore-openai
 python -m venv .venv
 .venv\Scripts\activate
 pip install -e .[dev]
