@@ -27,7 +27,6 @@ dev = [
 
 [project.scripts]
 tracecore-openai = "tracecore_openai.main:cli"
-tracecore-openai-verify = "tracecore_openai.verify:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

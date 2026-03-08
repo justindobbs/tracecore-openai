@@ -7,6 +7,6 @@
   {
     "name": "verification guidance",
     "input": "How do I verify an app with TraceCore?",
-    "expected_substring": "tracecore-openai-verify"
+    "expected_substring": "native TraceCore CLI"
   }
 ]

@@ -700,7 +700,7 @@
               <div>
                 <h3 style="color: var(--accent); margin-bottom: 0.5rem;">Current evidence</h3>
                 <ul class="muted">
-                  <li><strong>tracecore-openai-verify:</strong> passed all 5 of 5 scenarios</li>
+                  <li><strong>tracecore verify --latest:</strong> use the native TraceCore verification loop for the latest run</li>
                   <li><strong>python -m pytest:</strong> passed</li>
                   <li><strong>python -m ruff check .:</strong> passed</li>
                 </ul>
@@ -708,9 +708,9 @@
               <div>
                 <h3 style="color: var(--accent-2); margin-bottom: 0.5rem;">Operator next step</h3>
                 <ul class="muted">
-                  <li><strong>Seal bundle:</strong> <code>tracecore bundle seal --latest</code></li>
-                  <li><strong>Verify bundle:</strong> <code>tracecore bundle verify &lt;bundle_dir&gt;</code></li>
-                  <li><strong>Optional signing:</strong> <code>tracecore bundle sign &lt;bundle_dir&gt;</code></li>
+                  <li><strong>Verify latest:</strong> <code>tracecore verify --latest</code></li>
+                  <li><strong>Inspect:</strong> <code>tracecore inspect --run &lt;run_id&gt;</code></li>
+                  <li><strong>Compare revisions:</strong> <code>tracecore diff &lt;run_a&gt; &lt;run_b&gt;</code></li>
                 </ul>
               </div>
             </div>
@@ -834,10 +834,11 @@
               <p class="muted">Step 2 through step 5 of the workflow live here: run deterministic scenarios, inspect reliability evidence, improve the agent if needed, and finish with bundle verification for a certifiable artifact.</p>
               <ul class="muted">
                 <li>Set <code>TRACECORE_OPENAI_FAKE_RUNNER=1</code> for deterministic local runs without API spend</li>
-                <li>Run <code>tracecore-openai-verify</code> to execute the fixed scenario suite</li>
-                <li>Review <code>deliverables/verification/latest.json</code> as the reliability report for the current agent version</li>
-                <li>If the report fails expectations, modify the agent and rerun the same checks until it passes</li>
-                <li>The latest local run passed verification, pytest, and ruff, so the current next step is bundle sealing</li>
+                <li>Run <code>tracecore verify --latest</code> as the native TraceCore reliability check</li>
+                <li>Use <code>tracecore inspect --run &lt;run_id&gt;</code> to review a stored run artifact</li>
+                <li>Use <code>tracecore diff &lt;run_a&gt; &lt;run_b&gt;</code> or <code>tracecore baseline --compare ...</code> after changes</li>
+                <li>Use <code>tracecore runs list</code> and <code>tracecore runs summary</code> so the workflow feels like pytest for agents</li>
+                <li>Once behavior is stable, move to bundle sealing and verification</li>
               </ul>
             </div>
 
@@ -846,7 +847,12 @@
                 <div class="panel-title">Commands</div>
               </div>
               <pre>uvicorn tracecore_openai.main:app --reload
-tracecore-openai-verify
+tracecore verify --latest
+tracecore inspect --run &lt;run_id&gt;
+tracecore diff &lt;run_a&gt; &lt;run_b&gt;
+tracecore baseline --agent &lt;agent&gt; --task &lt;task&gt; --compare &lt;run_a&gt; &lt;run_b&gt;
+tracecore runs list --limit 5
+tracecore runs summary --limit 5
 python -m pytest
 python -m ruff check tracecore_openai tests
 
@@ -871,13 +877,13 @@ tracecore bundle sign &lt;bundle_dir&gt;</pre>
               <div>
                 <h3 style="color: var(--accent); margin-bottom: 0.5rem;">Passing evidence</h3>
                 <ul class="muted">
-                  <li><strong>Overall result:</strong> passed</li>
-                  <li><strong>Scenario count:</strong> 5 / 5 passed</li>
-                  <li><strong>Report file:</strong> <code>deliverables/verification/latest.json</code></li>
+                  <li><strong>Primary check:</strong> <code>tracecore verify --latest</code></li>
+                  <li><strong>Investigation tools:</strong> <code>inspect</code>, <code>diff</code>, <code>baseline</code></li>
+                  <li><strong>History tools:</strong> <code>tracecore runs list</code>, <code>tracecore runs summary</code></li>
                 </ul>
               </div>
               <div>
-                <h3 style="color: var(--accent-2); margin-bottom: 0.5rem;">Bundle next steps</h3>
+                <h3 style="color: var(--accent-2); margin-bottom: 0.5rem;">Release next steps</h3>
                 <ul class="muted">
                   <li><strong>Seal:</strong> <code>tracecore bundle seal --latest</code></li>
                   <li><strong>Verify:</strong> <code>tracecore bundle verify &lt;bundle_dir&gt;</code></li>
@@ -896,7 +902,8 @@ tracecore bundle sign &lt;bundle_dir&gt;</pre>
                 <h3 style="color: var(--accent); margin-bottom: 0.5rem;">Reliability workflow</h3>
                 <ul class="muted">
                   <li>Run the app and confirm the agent responds</li>
-                  <li>Run TraceCore verification and inspect the report</li>
+                  <li>Run <code>tracecore verify --latest</code> and inspect the latest artifact</li>
+                  <li>Use <code>diff</code>, <code>baseline</code>, and run history commands after changes</li>
                   <li>Decide whether the current agent meets your standard</li>
                 </ul>
               </div>

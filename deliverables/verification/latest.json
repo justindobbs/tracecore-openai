@@ -18,8 +18,8 @@
       "app": "chat_assistant",
       "name": "verification guidance",
       "passed": true,
-      "output": "Run tracecore-openai-verify to execute deterministic local verification scenarios.",
-      "expected_substring": "tracecore-openai-verify",
+      "output": "Use the native TraceCore CLI to verify and inspect the latest agent run, then compare revisions with diff and baseline commands.",
+      "expected_substring": "native TraceCore CLI",
       "agent_name": "Chat Assistant",
       "meta": {
         "mode": "fake"

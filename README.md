@@ -50,15 +50,22 @@ Open `http://127.0.0.1:8000`.
 
 ## Deterministic verification
 
-The verification harness runs the app in a fake deterministic mode so you can validate behavior without spending API credits.
-
-`tracecore-openai-verify` is a helper command defined by this example repository. In the main TraceCore CLI, the native verification workflow uses `tracecore verify`.
+The verification harness runs the app in a fake deterministic mode so you can validate behavior without spending API credits while staying inside the native TraceCore workflow.
 
 ```bash
-tracecore-openai-verify
+set TRACECORE_OPENAI_FAKE_RUNNER=1
+tracecore verify --latest
 ```
 
-This writes a JSON report to `deliverables/verification/latest.json`.
+Use the rest of the CLI to inspect and compare agent behavior as you iterate:
+
+```bash
+tracecore inspect --run <run_id>
+tracecore diff <run_a> <run_b>
+tracecore baseline --agent <agent> --task <task> --compare <run_a> <run_b>
+tracecore runs list --limit 5
+tracecore runs summary --limit 5
+```
 
 ## Real OpenAI Agents mode
 
@@ -80,11 +87,13 @@ set TRACECORE_OPENAI_FAKE_RUNNER=1
 ```bash
 uvicorn tracecore_openai.main:app --reload
 
-# repo-specific example helper command
-tracecore-openai-verify
-
-# native TraceCore CLI workflow
-# tracecore verify ...
+tracecore verify --latest
+tracecore inspect --run <run_id>
+tracecore diff <run_a> <run_b>
+tracecore baseline --agent <agent> --task <task> --compare <run_a> <run_b>
+tracecore runs list --limit 5
+tracecore runs summary --limit 5
+tracecore bundle seal --latest
 
 pytest
 ruff check .
