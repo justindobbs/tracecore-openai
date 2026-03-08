@@ -8,7 +8,7 @@
 1. Create a branch.
 2. Run `ruff check .`.
 3. Run `pytest`.
-4. Run `tracecore-openai-verify`.
+4. Run the native TraceCore verification loop (`tracecore verify`, `tracecore inspect`, `tracecore runs summary`) for the latest relevant run.
 5. Open a PR referencing the relevant TraceCore plan/issue.
 
 ## Notes

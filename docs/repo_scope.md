@@ -27,13 +27,13 @@ That distinction is central to TraceCore.
 
 ### 2. Deterministic verification is part of the development loop
 
-The `tracecore-openai-verify` command runs the included scenarios in deterministic mode and writes a structured report to `deliverables/verification/latest.json`.
+The native TraceCore CLI is the main verification loop this repo is meant to teach: verify the latest run, inspect the artifact, diff revisions, compare baselines, and review recent history as you iterate on the agent.
 
 This shows that evaluation can be part of normal local development, not only a late-stage release activity.
 
 ### 3. Verification produces evidence, not vibes
 
-The verification flow checks whether known scenarios produce the expected outputs or routing behavior.
+The verification flow checks whether known scenarios produce the expected outputs or routing behavior, and the broader CLI lets you inspect exactly what changed between revisions.
 
 A passing run gives the user evidence that the current agent behavior satisfies the defined expectations.
 A failing run gives the user a concrete starting point for remediation.
@@ -106,8 +106,8 @@ The core mission of TraceCore is to help people evaluate agents in a way that is
 This repository supports that mission by making the core idea easy to grasp:
 
 - first, you can run the agent and see that it works
-- then, you can verify whether it behaves reliably on known scenarios
-- then, you can inspect the evidence and improve the agent if needed
+- then, you can verify whether it behaves reliably on known scenarios with `tracecore verify`
+- then, you can inspect the evidence, compare revisions, and summarize run history with the rest of the CLI
 - finally, you can carry that evidence forward into bundle-oriented trust workflows
 
 In other words, this repo is a teaching example for the TraceCore mindset.

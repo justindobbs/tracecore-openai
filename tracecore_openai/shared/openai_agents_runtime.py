@@ -28,7 +28,7 @@ def _fake_chat_response(message: str) -> AgentRunResult:
     if "price" in lowered or "pricing" in lowered:
         output = "Our example stack is Python-first: FastAPI, uvicorn, and the OpenAI Agents SDK."
     elif "verify" in lowered or "tracecore" in lowered:
-        output = "Run tracecore-openai-verify to execute deterministic local verification scenarios."
+        output = "Use the native TraceCore CLI to verify and inspect the latest agent run, then compare revisions with diff and baseline commands."
     else:
         output = f"Chat assistant received: {message.strip()}"
     return AgentRunResult(app="chat_assistant", final_output=output, agent_name="Chat Assistant", meta={"mode": "fake"})

@@ -117,8 +117,10 @@ def main() -> None:
     else:
         print("1. Review the failing scenarios in the report above and in latest.json.")
         print("2. Modify the agent instructions, tools, routing, or validators.")
-        print("3. Rerun verification:")
-        print("   tracecore-openai-verify")
+        print("3. Use the native TraceCore CLI to inspect and compare the latest relevant run:")
+        print("   tracecore verify --latest")
+        print("   tracecore inspect --run <run_id>")
+        print("   tracecore diff <run_a> <run_b>")
         print("4. After verification passes, seal the release bundle:")
         print("   tracecore bundle seal --latest")
 
