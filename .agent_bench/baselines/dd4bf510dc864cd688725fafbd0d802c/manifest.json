@@ -1,0 +1,23 @@
+{
+  "run_id": "dd4bf510dc864cd688725fafbd0d802c",
+  "trace_id": "dd4bf510dc864cd688725fafbd0d802c",
+  "agent": "agents/chat_assistant_agent.py",
+  "task_ref": "chat_assistant_example@1",
+  "task_id": "chat_assistant_example",
+  "version": 1,
+  "seed": 0,
+  "harness_version": "0.9.0",
+  "started_at": "2026-03-08T18:11:41.694000+00:00",
+  "completed_at": "2026-03-08T18:11:42.192361+00:00",
+  "success": true,
+  "termination_reason": "success",
+  "failure_type": null,
+  "failure_reason": null,
+  "steps_used": 2,
+  "tool_calls_used": 2,
+  "trace_entry_count": 2,
+  "sandbox": {
+    "filesystem_roots": [],
+    "network_hosts": []
+  }
+}

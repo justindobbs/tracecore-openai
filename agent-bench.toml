@@ -1,0 +1,12 @@
+[defaults]
+agent = "agents/chat_assistant_agent.py"
+task = "chat_assistant_example@1"
+seed = 0
+
+[agent."agents/chat_assistant_agent.py"]
+task = "chat_assistant_example@1"
+seed = 0
+
+[agent."agents/support_triage_agent.py"]
+task = "support_triage_example@1"
+seed = 0

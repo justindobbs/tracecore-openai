@@ -54,6 +54,7 @@ The verification harness runs the app in a fake deterministic mode so you can va
 
 ```bash
 set TRACECORE_OPENAI_FAKE_RUNNER=1
+tracecore run --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --seed 0
 tracecore verify --latest
 ```
 
@@ -87,10 +88,11 @@ set TRACECORE_OPENAI_FAKE_RUNNER=1
 ```bash
 uvicorn tracecore_openai.main:app --reload
 
+tracecore run --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --seed 0
 tracecore verify --latest
 tracecore inspect --run <run_id>
 tracecore diff <run_a> <run_b>
-tracecore baseline --agent <agent> --task <task> --compare <run_a> <run_b>
+tracecore baseline --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --compare <run_a> <run_b>
 tracecore runs list --limit 5
 tracecore runs summary --limit 5
 tracecore bundle seal --latest

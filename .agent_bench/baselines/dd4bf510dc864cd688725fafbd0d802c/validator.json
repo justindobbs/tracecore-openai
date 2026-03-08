@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "termination_reason": "success",
+  "failure_type": null,
+  "failure_reason": null,
+  "metrics": {
+    "steps_used": 2,
+    "tool_calls_used": 2
+  }
+}

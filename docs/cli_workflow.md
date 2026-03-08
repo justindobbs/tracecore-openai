@@ -28,6 +28,7 @@ Then open `http://127.0.0.1:8000` and interact with the Chat Assistant or Suppor
 ## Verify the latest run
 
 ```bash
+tracecore run --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --seed 0
 tracecore verify --latest
 ```
 
@@ -54,7 +55,7 @@ This is one of the strongest everyday TraceCore workflows: make an edit, rerun, 
 ## Compare baselines
 
 ```bash
-tracecore baseline --agent <agent> --task <task> --compare <run_a> <run_b>
+tracecore baseline --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --compare <run_a> <run_b>
 ```
 
 Use baseline when you want to compare reliability across revisions or export a stronger point of reference.
@@ -84,6 +85,7 @@ This is how the example transitions from “the agent seems to work” to “we 
 
 ```bash
 uvicorn tracecore_openai.main:app --reload
+tracecore run --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --seed 0
 tracecore verify --latest
 tracecore inspect --run <run_id>
 tracecore diff <run_a> <run_b>
