@@ -1,5 +1,9 @@
 # TraceCore OpenAI
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-success.svg)](LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB.svg?logo=python&logoColor=white)](pyproject.toml)
+[![TraceCore Project](https://img.shields.io/badge/TraceCore-Main%20Repo-0d9488.svg)](https://github.com/justindobbs/Tracecore)
+
 `tracecore-openai` is a Python-first examples repository for building OpenAI Agents SDK applications with the same local `FastAPI` + `uvicorn` workflow already used in TraceCore.
 
 Main TraceCore repo: https://github.com/justindobbs/Tracecore
