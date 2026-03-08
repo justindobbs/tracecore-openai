@@ -2,6 +2,8 @@
 
 `tracecore-openai` is a Python-first examples repository for building OpenAI Agents SDK applications with the same local `FastAPI` + `uvicorn` workflow already used in TraceCore.
 
+Main TraceCore repo: https://github.com/justindobbs/Tracecore
+
 ## What this repo includes
 
 - A shared OpenAI Agents runtime adapter
@@ -11,11 +13,42 @@
   - `support_triage`
 - A deterministic local verification flow for app behavior
 
+## Start here if you are evaluating the repo
+
+Read `docs/repo_scope.md` for a short explanation of what this repository demonstrates, what it does not demonstrate, and how it fits TraceCore's core mission as an agent evaluation tool.
+
 ## Why no Docker
 
 Docker is optional. These examples call OpenAI-hosted models over HTTPS, so a normal Python process is enough for local development and verification.
 
 ## Quickstart
+
+### Option A: install the published TraceCore CLI
+
+Install the main `tracecore` CLI first if you want to use bundle and verification-adjacent commands from the broader TraceCore toolchain.
+
+```bash
+uv tool install "tracecore[openai_agents]"
+```
+
+Or with `pip` in your virtual environment:
+
+```bash
+pip install "tracecore[openai_agents]"
+```
+
+### Option B: clone and install TraceCore from source
+
+If you want to work on the main TraceCore repo locally, clone it and install it in editable mode:
+
+```bash
+git clone https://github.com/justindobbs/Tracecore.git
+python -m venv .venv-tracecore
+.venv-tracecore\Scripts\activate
+pip install -e .[dev,openai_agents]
+```
+
+### Install and run this `tracecore-openai` example repo
 
 ```bash
 python -m venv .venv
@@ -25,6 +58,8 @@ copy .env.example .env
 ```
 
 Set `OPENAI_API_KEY` in your environment or `.env` loader of choice.
+
+If you installed `tracecore` in a different environment, make sure the `tracecore` command is available in your shell before running bundle commands from this repo.
 
 ## Run the app
 
@@ -37,6 +72,8 @@ Open `http://127.0.0.1:8000`.
 ## Deterministic verification
 
 The verification harness runs the app in a fake deterministic mode so you can validate behavior without spending API credits.
+
+`tracecore-openai-verify` is a helper command defined by this example repository. In the main TraceCore CLI, the native verification workflow uses `tracecore verify`.
 
 ```bash
 tracecore-openai-verify
@@ -63,7 +100,13 @@ set TRACECORE_OPENAI_FAKE_RUNNER=1
 
 ```bash
 uvicorn tracecore_openai.main:app --reload
+
+# repo-specific example helper command
 tracecore-openai-verify
+
+# native TraceCore CLI workflow
+# tracecore verify ...
+
 pytest
 ruff check .
 ```
