@@ -1,0 +1,24 @@
+id = "chat_assistant_example"
+suite = "openai_examples"
+version = 1
+description = "Run the TraceCore OpenAI chat assistant example against a deterministic verification-style prompt."
+deterministic = true
+seed_behavior = "fixed"
+
+[budgets]
+steps = 8
+tool_calls = 8
+
+[action_surface]
+source = "actions.py"
+schema = "introspected"
+
+[validator]
+entrypoint = "validate.py:validate"
+
+[setup]
+entrypoint = "setup.py:setup"
+
+[sandbox]
+filesystem_roots = []
+network_hosts = []

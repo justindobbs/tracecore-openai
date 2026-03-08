@@ -837,9 +837,10 @@
               <p class="muted">Step 2 through step 5 of the workflow live here: run deterministic scenarios, inspect reliability evidence, improve the agent if needed, and finish with bundle verification for a certifiable artifact.</p>
               <ul class="muted">
                 <li>Set <code>TRACECORE_OPENAI_FAKE_RUNNER=1</code> for deterministic local runs without API spend</li>
+                <li>Run <code>tracecore run --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --seed 0</code> to create a real TraceCore run artifact from this repo</li>
                 <li>Run <code>tracecore verify --latest</code> as the native TraceCore reliability check</li>
                 <li>Use <code>tracecore inspect --run &lt;run_id&gt;</code> to review a stored run artifact</li>
-                <li>Use <code>tracecore diff &lt;run_a&gt; &lt;run_b&gt;</code> or <code>tracecore baseline --compare ...</code> after changes</li>
+                <li>Use <code>tracecore diff &lt;run_a&gt; &lt;run_b&gt;</code> or <code>tracecore baseline --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --compare ...</code> after changes</li>
                 <li>Use <code>tracecore runs list</code> and <code>tracecore runs summary</code> so the workflow feels like pytest for agents</li>
                 <li>Once behavior is stable, move to bundle sealing and verification</li>
               </ul>
@@ -850,10 +851,11 @@
                 <div class="panel-title">Commands</div>
               </div>
               <pre>uvicorn tracecore_openai.main:app --reload
+tracecore run --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --seed 0
 tracecore verify --latest
 tracecore inspect --run &lt;run_id&gt;
 tracecore diff &lt;run_a&gt; &lt;run_b&gt;
-tracecore baseline --agent &lt;agent&gt; --task &lt;task&gt; --compare &lt;run_a&gt; &lt;run_b&gt;
+tracecore baseline --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --compare &lt;run_a&gt; &lt;run_b&gt;
 tracecore runs list --limit 5
 tracecore runs summary --limit 5
 python -m pytest

@@ -1,0 +1,142 @@
+{
+  "task_id": "chat_assistant_example",
+  "version": 1,
+  "seed": 0,
+  "success": true,
+  "termination_reason": "success",
+  "failure_reason": null,
+  "failure_type": null,
+  "steps_used": 2,
+  "tool_calls_used": 2,
+  "metrics": {
+    "steps_used": 2,
+    "tool_calls_used": 2
+  },
+  "action_trace": [
+    {
+      "step": 1,
+      "action_ts": "2026-03-08T18:10:19.493930+00:00",
+      "observation": {
+        "step": 1,
+        "task": {
+          "id": "chat_assistant_example",
+          "description": "Evaluate the chat assistant example against deterministic prompt/response expectations."
+        },
+        "last_action": null,
+        "last_action_result": null,
+        "visible_state": {
+          "files_seen": []
+        },
+        "budget_remaining": {
+          "steps": 8,
+          "tool_calls": 8
+        }
+      },
+      "action": {
+        "type": "ask_chat_assistant",
+        "args": {
+          "message": "How do I verify an app with TraceCore?"
+        }
+      },
+      "result": {
+        "ok": true,
+        "response": "Use the native TraceCore CLI to verify and inspect the latest agent run, then compare revisions with diff and baseline commands.",
+        "agent_name": "Chat Assistant",
+        "meta": {
+          "mode": "fake"
+        }
+      },
+      "io_audit": [],
+      "llm_trace": null,
+      "budget_after_step": {
+        "steps": 7,
+        "tool_calls": 7
+      },
+      "budget_delta": {
+        "steps": 1,
+        "tool_calls": 1
+      }
+    },
+    {
+      "step": 2,
+      "action_ts": "2026-03-08T18:10:20.043740+00:00",
+      "observation": {
+        "step": 2,
+        "task": {
+          "id": "chat_assistant_example",
+          "description": "Evaluate the chat assistant example against deterministic prompt/response expectations."
+        },
+        "last_action": {
+          "type": "ask_chat_assistant",
+          "args": {
+            "message": "How do I verify an app with TraceCore?"
+          }
+        },
+        "last_action_result": {
+          "ok": true,
+          "response": "Use the native TraceCore CLI to verify and inspect the latest agent run, then compare revisions with diff and baseline commands.",
+          "agent_name": "Chat Assistant",
+          "meta": {
+            "mode": "fake"
+          }
+        },
+        "visible_state": {
+          "files_seen": []
+        },
+        "budget_remaining": {
+          "steps": 7,
+          "tool_calls": 7
+        }
+      },
+      "action": {
+        "type": "set_output",
+        "args": {
+          "key": "chat_response",
+          "value": "Use the native TraceCore CLI to verify and inspect the latest agent run, then compare revisions with diff and baseline commands."
+        }
+      },
+      "result": {
+        "ok": true
+      },
+      "io_audit": [],
+      "llm_trace": null,
+      "budget_after_step": {
+        "steps": 6,
+        "tool_calls": 6
+      },
+      "budget_delta": {
+        "steps": 1,
+        "tool_calls": 1
+      }
+    }
+  ],
+  "sandbox": {
+    "filesystem_roots": [],
+    "network_hosts": []
+  },
+  "run_id": "c8007fb9d55d418c8e4f6f64cb59e8f7",
+  "trace_id": "c8007fb9d55d418c8e4f6f64cb59e8f7",
+  "agent": "agents/chat_assistant_agent.py",
+  "agent_ref": "agents/chat_assistant_agent.py",
+  "task_ref": "chat_assistant_example@1",
+  "task_hash": "0b410310f1face5c61955a2851df63ff677f837858c3ce2b681e6838e3dd201d",
+  "started_at": "2026-03-08T18:10:19.408512+00:00",
+  "harness_version": "0.9.0",
+  "spec_version": "tracecore-spec-v1.0",
+  "runtime_identity": {
+    "name": "tracecore",
+    "version": "0.9.0",
+    "git_sha": null
+  },
+  "budgets": {
+    "steps": 8,
+    "tool_calls": 8
+  },
+  "completed_at": "2026-03-08T18:10:20.057219+00:00",
+  "wall_clock_elapsed_s": 0.649,
+  "validator": {
+    "ok": true,
+    "message": "chat assistant returned TraceCore verification guidance"
+  },
+  "artifact_hash": "sha256:8b32a476c212f8544015a792e69b2200717b9aca58a7ef3bf92074172ba6c751"
+}
