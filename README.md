@@ -6,8 +6,6 @@
 
 `tracecore-openai` is a Python-first examples repository for building OpenAI Agents SDK applications with the same local `FastAPI` + `uvicorn` workflow already used in TraceCore.
 
-Main TraceCore repo: https://github.com/justindobbs/Tracecore
-
 ## What this repo includes
 
 - A shared OpenAI Agents runtime adapter
