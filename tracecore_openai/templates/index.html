@@ -6,378 +6,475 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #090014;
-      --panel: rgba(10, 18, 34, 0.78);
-      --panel-strong: rgba(20, 28, 52, 0.9);
-      --line: rgba(0, 255, 240, 0.22);
-      --text: #f5f7ff;
-      --muted: #9db2d0;
-      --cyan: #56f6ff;
-      --pink: #ff4fd8;
-      --lime: #b6ff5c;
-      --warn: #ffb347;
-      --shadow: 0 0 30px rgba(86, 246, 255, 0.12);
+      --bg: #05070d;
+      --panel: #0c1422;
+      --panel-strong: #0a101d;
+      --border: #162036;
+      --border-strong: #22314f;
+      --text: #eaf3ff;
+      --muted: #7f8ca7;
+      --accent: #44ffc0;
+      --accent-2: #4fa3ff;
+      --accent-fade: rgba(68, 255, 192, 0.14);
+      --danger: #ff6b81;
+      --warn: #ffc14f;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      min-height: 100vh;
-      font-family: Inter, Segoe UI, Arial, sans-serif;
-      line-height: 1.55;
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at 20% 10%, rgba(68, 255, 192, 0.08), transparent 32%),
+        radial-gradient(circle at 80% 0%, rgba(79, 163, 255, 0.12), transparent 30%),
+        var(--bg);
       color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(255, 79, 216, 0.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(86, 246, 255, 0.16), transparent 30%),
-        linear-gradient(180deg, #06010d 0%, #0a0415 45%, #050913 100%);
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 36px 36px;
-      pointer-events: none;
-      opacity: 0.2;
+    body.pending-run .result-json,
+    body.pending-run .status-chip {
+      opacity: 0;
+      transform: translateY(6px);
     }
 
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0 48px;
-      position: relative;
-      z-index: 1;
+    body.pending-run .spinner {
+      opacity: 1;
     }
 
-    .dashboard {
+    .app-shell {
       display: grid;
-      grid-template-columns: 260px minmax(0, 1fr);
-      gap: 20px;
-      align-items: start;
+      grid-template-columns: 240px 1fr;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .sidebar,
-    .topbar,
-    .section-card,
-    .form-card,
-    .result-card,
-    .panel {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-    }
-
-    .sidebar {
-      position: sticky;
-      top: 18px;
-      border-radius: 24px;
-      padding: 20px;
-      min-height: calc(100vh - 46px);
+    .rail {
+      background: linear-gradient(180deg, var(--panel-strong), #080c16);
+      border-right: 1px solid var(--border);
+      padding: 1.2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 0;
     }
 
     .brand {
-      padding-bottom: 18px;
-      margin-bottom: 18px;
-      border-bottom: 1px solid rgba(86, 246, 255, 0.14);
-    }
-
-    .brand h1 {
-      font-size: 1.45rem;
-      max-width: none;
-      margin-bottom: 8px;
-    }
-
-    .brand p {
-      font-size: 0.94rem;
-    }
-
-    .nav-group {
-      margin-bottom: 18px;
-    }
-
-    .nav-label {
-      display: block;
-      margin-bottom: 10px;
-      color: var(--pink);
-      font-size: 0.78rem;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-    }
-
-    .nav-link {
-      display: block;
-      padding: 10px 12px;
-      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.95rem;
       color: var(--text);
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      margin-top: 0.25rem;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-top: 0.5rem;
+    }
+
+    .tab-btn {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 12px;
+      padding: 0.65rem 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.18s ease;
       text-decoration: none;
-      border: 1px solid transparent;
-      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
-      margin-bottom: 8px;
+      margin: 0;
     }
 
-    .nav-link:hover {
-      background: rgba(86, 246, 255, 0.08);
-      border-color: rgba(86, 246, 255, 0.16);
-      transform: translateX(2px);
+    .tab-btn .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--border);
     }
 
-    .sidebar-note {
-      margin-top: 20px;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(7, 15, 30, 0.88);
-      border: 1px solid rgba(255, 79, 216, 0.18);
+    .tab-btn .label {
+      flex: 1;
+      text-align: left;
     }
 
-    .main {
-      min-width: 0;
+    .tab-btn.active,
+    .tab-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-fade);
+      color: var(--text);
+    }
+
+    .tab-btn.active .dot,
+    .tab-btn:hover .dot {
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(68, 255, 192, 0.6);
+    }
+
+    .status-block {
+      margin-top: auto;
+      padding: 0.75rem 0.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.8rem;
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .canvas {
+      background: var(--panel);
+      padding: 1.25rem 1.5rem 1.5rem;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      overflow: hidden;
     }
 
     .topbar {
-      border-radius: 24px;
-      padding: 22px;
-      margin-bottom: 18px;
-    }
-
-    .topbar-grid {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .topbar::after {
-      content: "TRACECORE VERIFIED LOOP";
-      position: absolute;
-      right: 20px;
-      top: 18px;
-      color: rgba(86, 246, 255, 0.18);
-      font-size: 12px;
-      letter-spacing: 0.35em;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 79, 216, 0.35);
-      color: var(--pink);
-      font-size: 12px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    h1, h2, h3 {
-      margin: 0 0 10px;
-      line-height: 1.15;
-    }
-
-    h1 { text-shadow: 0 0 18px rgba(86, 246, 255, 0.14); }
-
-    .headline {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      max-width: 760px;
-    }
-
-    p {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    .headline-copy {
-      max-width: 760px;
-      font-size: 1rem;
-    }
-
-    .info-grid,
-    .apps-grid,
-    .steps-grid,
-    .results-grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .stat {
-      padding: 14px;
-      border-radius: 18px;
-      background: rgba(7, 15, 30, 0.78);
-      border: 1px solid rgba(86, 246, 255, 0.16);
-    }
-
-    .stat strong {
-      display: block;
-      color: var(--text);
-      font-size: 1.3rem;
-      margin-bottom: 4px;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .info-grid,
-    .apps-grid,
-    .steps-grid,
-    .results-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      margin-top: 18px;
-    }
-
-    .section-card {
-      border-radius: 22px;
-      padding: 22px;
-      margin-top: 18px;
-    }
-
-    .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 14px;
+      gap: 1rem;
+      border: 1px solid var(--border);
+      background: #0d1424;
+      border-radius: 14px;
+      padding: 0.9rem 1.2rem;
+      flex-shrink: 0;
     }
 
-    .section-kicker {
-      color: var(--pink);
-      font-size: 0.76rem;
-      letter-spacing: 0.18em;
+    .topbar .title {
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-size: 1rem;
+    }
+
+    .topbar .meta {
+      display: flex;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .pill {
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
-    .panel {
-      border-radius: 22px;
-      padding: 22px;
+    .pill-accent { background: rgba(68, 255, 192, 0.12); color: var(--accent); }
+    .pill-danger { background: rgba(255, 107, 129, 0.14); color: #ff6b81; }
+    .pill-warn { background: rgba(251, 191, 36, 0.14); color: #fbbf24; }
+
+    .main-grid {
+      position: relative;
+      flex: 1;
+      min-height: 0;
     }
 
-    .panel h2 {
-      font-size: 1.25rem;
-      margin-bottom: 14px;
+    .tab-panel {
+      position: absolute;
+      inset: 0;
+      display: none;
+      animation: fade 0.25s ease;
+      overflow: auto;
     }
 
-    .chips {
+    .tab-panel.active {
+      display: block;
+    }
+
+    .panel-card {
+      background: #0d1424;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .panel-header {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .chip {
-      display: inline-flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(7, 15, 30, 0.9);
-      border: 1px solid rgba(255, 79, 216, 0.2);
-      color: var(--text);
-      font-size: 0.92rem;
+      margin-bottom: 0.75rem;
+      gap: 0.5rem;
     }
 
-    .chip strong {
-      color: var(--cyan);
-      font-weight: 700;
-    }
-
-    .app-meta,
-    .step-list,
-    .command-list,
-    .signal-list {
-      margin: 14px 0 0;
-      padding-left: 18px;
+    .panel-title {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.88rem;
       color: var(--muted);
     }
 
-    .app-meta li,
-    .step-list li,
-    .command-list li,
-    .signal-list li {
-      margin-bottom: 10px;
+    .muted {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
     }
 
-    .form-card,
-    .result-card {
-      border-radius: 22px;
-      padding: 22px;
-    }
-
-    .form-card {
-      background: var(--panel-strong);
-    }
-
-    .form-card h3,
-    .result-card h3 {
-      margin-bottom: 8px;
-      font-size: 1.15rem;
+    h1, h2, h3 {
+      margin: 0 0 0.5rem;
+      line-height: 1.2;
     }
 
     label {
       display: block;
-      margin-top: 14px;
-      margin-bottom: 8px;
-      color: var(--text);
+      margin-bottom: 0.35rem;
+      font-size: 0.85rem;
       font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--muted);
     }
 
     textarea,
     input {
       width: 100%;
-      padding: 0.9rem 1rem;
-      border-radius: 14px;
-      border: 1px solid rgba(86, 246, 255, 0.22);
-      background: rgba(3, 10, 22, 0.9);
+      padding: 0.7rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: #0b111d;
       color: var(--text);
-      outline: none;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+      font-size: 0.95rem;
+      margin-bottom: 0.9rem;
+      font-family: inherit;
     }
 
     textarea:focus,
     input:focus {
-      border-color: rgba(255, 79, 216, 0.7);
-      box-shadow: 0 0 0 3px rgba(255, 79, 216, 0.12);
-      transform: translateY(-1px);
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(68, 255, 192, 0.08);
     }
 
-    button {
-      margin-top: 8px;
-      padding: 0.9rem 1.1rem;
-      border-radius: 14px;
-      border: 1px solid rgba(86, 246, 255, 0.45);
-      background: linear-gradient(135deg, rgba(86, 246, 255, 0.18), rgba(255, 79, 216, 0.24));
-      color: var(--text);
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    button[type="submit"],
+    .btn {
+      margin-top: 0.1rem;
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      font-size: 0.98rem;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      background: linear-gradient(120deg, rgba(68, 255, 192, 0.22), rgba(79, 163, 255, 0.25));
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
     }
 
-    button:hover {
+    button[type="submit"]:hover,
+    .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 0 18px rgba(86, 246, 255, 0.16);
+      box-shadow: 0 8px 22px rgba(68, 255, 192, 0.2);
+      border-color: var(--accent-2);
     }
 
     button:disabled {
-      opacity: 0.72;
-      cursor: wait;
+      opacity: 0.6;
+      cursor: not-allowed;
       transform: none;
       box-shadow: none;
     }
 
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .metrics {
+      display: grid;
+      gap: 0.9rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .metric-card {
+      border: 1px solid var(--border);
+      background: #0b111d;
+      border-radius: 12px;
+      padding: 0.95rem 1rem;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metric-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-top: 0.15rem;
+    }
+
+    pre {
+      background: #0b111d;
+      border-radius: 12px;
+      padding: 1rem;
+      overflow: auto;
+      font-family: "Fira Code", SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      color: var(--text);
+      margin: 0;
+    }
+
+    .result-content {
+      position: relative;
+      min-height: 220px;
+    }
+
+    .result-progress {
+      margin: 1rem 0 0.9rem;
+    }
+
+    .result-json {
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .spinner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease 0.1s;
+    }
+
+    .spinner::before {
+      content: "";
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--accent);
+      animation: spin 0.8s linear infinite;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+    }
+
+    .status-chip.success {
+      color: var(--accent);
+      border-color: rgba(68, 255, 192, 0.4);
+      background: rgba(68, 255, 192, 0.12);
+    }
+
+    .status-chip.failure {
+      color: var(--danger);
+      border-color: rgba(255, 107, 129, 0.4);
+      background: rgba(255, 107, 129, 0.1);
+    }
+
+    .error-box {
+      border: 1px solid rgba(255, 107, 129, 0.6);
+      border-radius: 12px;
+      padding: 1rem;
+      background: rgba(255, 107, 129, 0.1);
+      margin-top: 1rem;
+      color: var(--text);
+    }
+
+    .link {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    ul.muted {
+      padding-left: 1.2rem;
+    }
+
+    ul.muted li {
+      margin-bottom: 0.5rem;
+    }
+
+    code {
+      font-family: "Fira Code", monospace;
+      font-size: 0.85em;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.15rem 0.4rem;
+      border-radius: 6px;
+    }
+
+    .run-status {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .run-status-meta {
+      display: grid;
+      gap: 0.25rem;
+    }
+
+    .run-status-title {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .run-status-detail {
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
     .progress-meter {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(86, 246, 255, 0.16);
-      background: rgba(2, 8, 18, 0.88);
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.3);
       display: none;
     }
 
@@ -386,357 +483,465 @@
     }
 
     .progress-meter.done {
-      border-color: rgba(182, 255, 92, 0.28);
+      border-color: rgba(68, 255, 192, 0.3);
     }
 
     .progress-meter.error {
-      border-color: rgba(255, 157, 61, 0.3);
+      border-color: rgba(255, 107, 129, 0.4);
     }
 
     .progress-label {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-      font-size: 0.88rem;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.82rem;
       color: var(--muted);
     }
 
     .progress-track {
       width: 100%;
-      height: 10px;
+      height: 6px;
       border-radius: 999px;
-      background: rgba(86, 246, 255, 0.08);
+      background: rgba(255, 255, 255, 0.06);
       overflow: hidden;
-      border: 1px solid rgba(86, 246, 255, 0.12);
     }
 
     .progress-fill {
-      width: 0;
+      width: 0%;
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(90deg, rgba(86, 246, 255, 0.95), rgba(255, 79, 216, 0.95));
-      box-shadow: 0 0 16px rgba(86, 246, 255, 0.18);
-      transition: width 0.25s ease;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.3s ease;
     }
 
-    .progress-meter.active .progress-fill.is-animating {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .progress-meter.active .progress-fill.is-animating::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      animation: progressSweep 1.15s linear infinite;
-    }
-
-    @keyframes progressSweep {
-      from {
-        transform: translateX(-100%);
-      }
-      to {
-        transform: translateX(220%);
-      }
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .mono,
-    pre {
-      font-family: Consolas, Monaco, monospace;
-    }
-
-    .mono {
-      display: inline-block;
-      padding: 0.12rem 0.38rem;
-      border-radius: 6px;
-      background: rgba(86, 246, 255, 0.1);
-      color: var(--cyan);
-    }
-
-    pre {
-      margin: 14px 0 0;
-      padding: 16px;
-      border-radius: 16px;
-      background: rgba(2, 8, 18, 0.95);
-      border: 1px solid rgba(86, 246, 255, 0.14);
-      color: #d9f9ff;
-      overflow-x: auto;
-      white-space: pre-wrap;
-    }
-
-    .result-card {
-      min-height: 100%;
-    }
-
-    .status-line {
+    .chips {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-      color: var(--muted);
-      font-size: 0.94rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
     }
 
-    .status-pill {
-      padding: 6px 10px;
+    .chip {
+      padding: 0.35rem 0.6rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
       border-radius: 999px;
-      font-size: 0.78rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border: 1px solid rgba(182, 255, 92, 0.35);
-      color: var(--lime);
-      background: rgba(182, 255, 92, 0.08);
+      font-size: 0.8rem;
+      color: var(--muted);
     }
 
-    .accent-pink { color: var(--pink); }
-    .accent-cyan { color: var(--cyan); }
-    .accent-warn { color: var(--warn); }
+    .chip strong {
+      color: var(--accent);
+    }
 
-    @media (max-width: 920px) {
-      .dashboard,
-      .topbar-grid,
-      .info-grid,
-      .apps-grid,
-      .steps-grid,
-      .results-grid {
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(68, 255, 192, 0.3);
+      border-radius: 999px;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
         grid-template-columns: 1fr;
       }
 
-      .sidebar {
-        position: static;
-        min-height: auto;
+      .rail {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0.75rem;
       }
 
-      .topbar::after {
-        position: static;
-        display: block;
-        margin-top: 16px;
+      .nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .status-block {
+        display: none;
+      }
+
+      .grid.two {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <div class="dashboard">
-      <aside class="sidebar">
-        <div class="brand">
-          <span class="eyebrow">TraceCore OpenAI</span>
-          <h1>Agent Dashboard</h1>
-          <p>App surfaces, verification flow, runtime notes, and artifact-aware iteration in one place.</p>
+  <div class="app-shell">
+    <aside class="rail">
+      <div class="brand">TraceCore <small>OpenAI Agents</small></div>
+      <div class="nav">
+        <button class="tab-btn active" data-tab="overview"><span class="dot"></span><span class="label">Overview</span></button>
+        <button class="tab-btn" data-tab="chat"><span class="dot"></span><span class="label">Chat Assistant</span></button>
+        <button class="tab-btn" data-tab="triage"><span class="dot"></span><span class="label">Support Triage</span></button>
+        <button class="tab-btn" data-tab="results"><span class="dot"></span><span class="label">Results</span></button>
+        <button class="tab-btn" data-tab="verify"><span class="dot"></span><span class="label">Verification</span></button>
+      </div>
+      <div class="status-block">
+        <div>Mode: <span class="pill" id="mode-pill">Live</span></div>
+        <div>Runtime: <span class="pill">FastAPI</span></div>
+        <div>Port: <span class="pill">8000</span></div>
+      </div>
+    </aside>
+
+    <div class="canvas">
+      <div class="topbar">
+        <div class="title">Agent Dashboard</div>
+        <div class="meta">
+          <div>Apps: <span class="pill pill-accent">2 surfaces</span></div>
+          <div>Workflow: <span class="pill pill-accent">Run to certify</span></div>
         </div>
+      </div>
 
-        <nav>
-          <div class="nav-group">
-            <span class="nav-label">Sections</span>
-            <a class="nav-link" href="#overview">Overview</a>
-            <a class="nav-link" href="#apps">Apps</a>
-            <a class="nav-link" href="#results">Result Stream</a>
-            <a class="nav-link" href="#verification">Verification</a>
-            <a class="nav-link" href="#next-steps">Next Steps</a>
-          </div>
-
-          <div class="nav-group">
-            <span class="nav-label">Commands</span>
-            <a class="nav-link" href="#verification">`tracecore-openai-verify`</a>
-            <a class="nav-link" href="#verification">`python -m pytest`</a>
-            <a class="nav-link" href="#verification">`python -m ruff check .`</a>
-          </div>
-        </nav>
-
-        <div class="sidebar-note">
-          <strong class="accent-cyan">Current mode</strong>
-          <p>Use <span class="mono">TRACECORE_OPENAI_FAKE_RUNNER=1</span> for deterministic local checks before live model calls.</p>
-        </div>
-      </aside>
-
-      <section class="main">
-        <section class="topbar" id="overview">
-          <div class="topbar-grid">
-            <div>
-              <span class="eyebrow">FastAPI + OpenAI Agents SDK</span>
-              <h2 class="headline">A TraceCore-style dashboard for trying agent apps, validating them, and understanding what happens next.</h2>
-              <p class="headline-copy">This workspace is meant to feel operational rather than promotional: you can run the example surfaces, inspect live responses, understand how verification is being applied, and iterate toward richer agent apps.</p>
+      <div class="main-grid">
+        <section class="tab-panel active" data-panel="overview">
+          <div class="grid two">
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">Workspace</div>
+              </div>
+              <p class="muted">This dashboard is a working example of the full TraceCore loop: run the agent, confirm it responds, measure whether it is reliable, inspect why it passed or failed, improve the agent when needed, and finish with bundle verification for a certifiable release.</p>
               <div class="chips">
-                <span class="chip"><strong>Run</strong> start the local app</span>
-                <span class="chip"><strong>Try</strong> exercise the app surfaces</span>
-                <span class="chip"><strong>Verify</strong> run deterministic checks</span>
-                <span class="chip"><strong>Inspect</strong> read verification outputs</span>
+                <span class="chip"><strong>Run</strong> prove the agent responds</span>
+                <span class="chip"><strong>Measure</strong> test reliability with TraceCore</span>
+                <span class="chip"><strong>Repair</strong> improve failing behavior</span>
+                <span class="chip"><strong>Bundle</strong> verify for certification</span>
               </div>
             </div>
-            <div class="stats">
-              <div class="stat">
-                <strong>2</strong>
-                <span>example app surfaces live in this starter repo</span>
+
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">Current status</div>
               </div>
-              <div class="stat">
-                <strong>5</strong>
-                <span>deterministic verification scenarios currently exercised</span>
+              <div class="metrics">
+                <div class="metric-card">
+                  <div class="metric-label">Verification</div>
+                  <div class="metric-value">5 / 5</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Pytest</div>
+                  <div class="metric-value">Passed</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Ruff</div>
+                  <div class="metric-value">Passed</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Next step</div>
+                  <div class="metric-value">Bundle</div>
+                </div>
               </div>
-              <div class="stat">
-                <strong>FastAPI</strong>
-                <span>simple local runtime, no Docker required for LLM calls</span>
+            </div>
+          </div>
+
+          <div class="panel-card" style="margin-top: 1rem;">
+            <div class="panel-header">
+              <div class="panel-title">TraceCore Journey</div>
+            </div>
+            <div class="grid two">
+              <div>
+                <h3 style="color: var(--accent); margin-bottom: 0.5rem;">1. Run the example</h3>
+                <p class="muted">Use the Chat Assistant or Support Triage tabs to show that the agent works as an application surface and responds to real prompts.</p>
+                <ul class="muted">
+                  <li>The first signal is simple: does the agent respond correctly in the UI?</li>
+                  <li>This proves usefulness, but not reliability.</li>
+                </ul>
               </div>
-              <div class="stat">
-                <strong>TraceCore</strong>
-                <span>verification-first workflow instead of vibes-only demos</span>
+              <div>
+                <h3 style="color: var(--accent-2); margin-bottom: 0.5rem;">2. Verify the agent</h3>
+                <p class="muted">Run TraceCore verification to see whether the agent meets deterministic expectations and reliability standards across known scenarios.</p>
+                <ul class="muted">
+                  <li>Verification results tell you whether behavior is dependable, not just plausible.</li>
+                  <li>If it fails, the output gives you evidence about what to fix next.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card" style="margin-top: 1rem;">
+            <div class="panel-header">
+              <div class="panel-title">From demo to certified agent</div>
+            </div>
+            <div class="grid two">
+              <div>
+                <h3 style="color: var(--accent); margin-bottom: 0.5rem;">3. Remediate when verification fails</h3>
+                <p class="muted">If the verification report shows weak routing, inconsistent phrasing, or missing required behaviors, you refine the agent instructions, tools, routing, or tests and run verification again.</p>
+              </div>
+              <div>
+                <h3 style="color: var(--accent-2); margin-bottom: 0.5rem;">4. Bundle verify for release confidence</h3>
+                <p class="muted">Once the agent passes the relevant checks, you move to bundle verification so the release artifact carries evidence that the agent meets the expected TraceCore standard and can be treated as a certified bundle.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card" style="margin-top: 1rem;">
+            <div class="panel-header">
+              <div class="panel-title">Latest quality gates</div>
+            </div>
+            <div class="grid two">
+              <div>
+                <h3 style="color: var(--accent); margin-bottom: 0.5rem;">Current evidence</h3>
+                <ul class="muted">
+                  <li><strong>tracecore-openai-verify:</strong> passed all 5 of 5 scenarios</li>
+                  <li><strong>python -m pytest:</strong> passed</li>
+                  <li><strong>python -m ruff check .:</strong> passed</li>
+                </ul>
+              </div>
+              <div>
+                <h3 style="color: var(--accent-2); margin-bottom: 0.5rem;">Operator next step</h3>
+                <ul class="muted">
+                  <li><strong>Seal bundle:</strong> <code>tracecore bundle seal --latest</code></li>
+                  <li><strong>Verify bundle:</strong> <code>tracecore bundle verify &lt;bundle_dir&gt;</code></li>
+                  <li><strong>Optional signing:</strong> <code>tracecore bundle sign &lt;bundle_dir&gt;</code></li>
+                </ul>
               </div>
             </div>
           </div>
         </section>
 
-        <section class="section-card">
-          <div class="section-header">
-            <div>
-              <div class="section-kicker">Workspace context</div>
-              <h2>What this dashboard is showing</h2>
+        <section class="tab-panel" data-panel="chat">
+          <div class="grid two">
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">Chat Assistant</div>
+              </div>
+              <p class="muted">Step 1 of the workflow: run a real prompt and confirm the agent produces a useful answer before asking whether it is reliable enough to ship.</p>
+              <form id="chat-form">
+                <label for="chat-message">Message</label>
+                <textarea id="chat-message" name="message" rows="4" placeholder="Ask a product, onboarding, or verification question"></textarea>
+                <button type="submit">Run Chat Assistant</button>
+              </form>
+              <div class="run-status" data-run-status>
+                <div class="run-status-meta">
+                  <span class="run-status-title">Latest Run</span>
+                  <span class="run-status-detail" data-run-detail>Idle. Waiting for your first question.</span>
+                </div>
+                <span class="status-chip" data-run-badge>Idle</span>
+              </div>
             </div>
-          </div>
-          <div class="info-grid">
-            <article class="panel">
-              <h2>App surfaces</h2>
-              <p>This repo adapts OpenAI Agents SDK patterns into app-like examples with a local UX and an explicit validation story.</p>
-              <ul class="signal-list">
-                <li><span class="accent-cyan">Chat Assistant</span> is a lightweight single-agent surface for onboarding, product guidance, and basic question handling.</li>
-                <li><span class="accent-pink">Support Triage</span> demonstrates multi-agent routing logic for billing, technical, and account-style issues.</li>
+
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">Reliability lens</div>
+              </div>
+              <ul class="muted">
+                <li><strong>Pattern:</strong> single agent with tool access</li>
+                <li><strong>Working example:</strong> confirm the app responds to a realistic prompt in the UI</li>
+                <li><strong>TraceCore check:</strong> verify expected guidance and structure appear for known prompts</li>
+                <li><strong>If it fails:</strong> tighten instructions, tools, or expected behaviors and rerun verification</li>
               </ul>
-            </article>
-
-            <article class="panel">
-              <h2>Operator workflow</h2>
-              <ol class="step-list">
-                <li>Run the app locally with <span class="mono">uvicorn tracecore_openai.main:app --reload</span>.</li>
-                <li>Exercise the routes in this dashboard to understand intended behavior.</li>
-                <li>Run <span class="mono">tracecore-openai-verify</span> to execute deterministic scenarios.</li>
-                <li>Inspect <span class="mono">deliverables/verification/latest.json</span> before moving deeper into live usage.</li>
-              </ol>
-            </article>
+            </div>
           </div>
         </section>
 
-        <section class="section-card" id="apps">
-          <div class="section-header">
-            <div>
-              <div class="section-kicker">Apps</div>
-              <h2>Interactive app surfaces</h2>
+        <section class="tab-panel" data-panel="triage">
+          <div class="grid two">
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">Support Triage</div>
+              </div>
+              <p class="muted">Use this surface to show that routing works in practice, then verify whether the routing decisions consistently satisfy TraceCore expectations.</p>
+              <form id="triage-form">
+                <label for="triage-message">Support Issue</label>
+                <textarea id="triage-message" name="message" rows="4" placeholder="Describe the issue like a real end user would"></textarea>
+                <button type="submit">Run Support Triage</button>
+              </form>
+              <div class="run-status" data-run-status>
+                <div class="run-status-meta">
+                  <span class="run-status-title">Latest Run</span>
+                  <span class="run-status-detail" data-run-detail>Idle. Waiting for your first issue.</span>
+                </div>
+                <span class="status-chip" data-run-badge>Idle</span>
+              </div>
             </div>
-          </div>
-          <div class="apps-grid">
-            <article class="form-card">
-        <h3>Chat Assistant</h3>
-        <p class="hint">Best for product help, onboarding copy, and showing the simplest OpenAI Agents SDK path.</p>
-        <ul class="app-meta">
-          <li><strong>Pattern:</strong> single agent with tool access</li>
-          <li><strong>Good for:</strong> baseline UX checks and quick verification smoke tests</li>
-          <li><strong>Verification signal:</strong> expected guidance phrases appear for known prompts</li>
-        </ul>
-        <form id="chat-form" method="post" action="/api/chat-assistant">
-          <label for="chat-message">Message</label>
-          <textarea id="chat-message" name="message" rows="5" placeholder="Ask a product, onboarding, or verification question"></textarea>
-          <button type="submit">Run chat assistant</button>
-          <div class="progress-meter" data-progress>
-            <div class="progress-label">
-              <span data-progress-text>Preparing request...</span>
-              <span data-progress-value>0%</span>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill" data-progress-fill></div>
-            </div>
-          </div>
-        </form>
-            </article>
 
-            <article class="form-card">
-        <h3>Support Triage</h3>
-        <p class="hint">Best for showing routing behavior and how app-facing requests can be classified before specialist handling.</p>
-        <ul class="app-meta">
-          <li><strong>Pattern:</strong> triage agent with handoffs</li>
-          <li><strong>Good for:</strong> richer orchestration and user-facing workflow demos</li>
-          <li><strong>Verification signal:</strong> known issues map to billing, technical, or account routes</li>
-        </ul>
-        <form id="triage-form" method="post" action="/api/support-triage">
-          <label for="triage-message">Support issue</label>
-          <textarea id="triage-message" name="message" rows="5" placeholder="Describe the issue like a real end user would"></textarea>
-          <button type="submit">Run support triage</button>
-          <div class="progress-meter" data-progress>
-            <div class="progress-label">
-              <span data-progress-text>Preparing request...</span>
-              <span data-progress-value>0%</span>
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">Reliability lens</div>
+              </div>
+              <ul class="muted">
+                <li><strong>Pattern:</strong> triage agent with handoffs</li>
+                <li><strong>Working example:</strong> confirm the visible routing behavior makes sense to a user</li>
+                <li><strong>TraceCore check:</strong> verify known issues map to the correct billing, technical, or account routes</li>
+                <li><strong>If it fails:</strong> adjust handoffs or prompt logic, then rerun the suite until routing is stable</li>
+              </ul>
             </div>
-            <div class="progress-track">
-              <div class="progress-fill" data-progress-fill></div>
-            </div>
-          </div>
-        </form>
-            </article>
           </div>
         </section>
 
-        <section class="section-card" id="results">
-          <div class="section-header">
-            <div>
-              <div class="section-kicker">Results</div>
-              <h2>Result stream and runtime context</h2>
+        <section class="tab-panel" data-panel="results">
+          <div class="grid two">
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">Live Result Stream</div>
+                <div class="pill">JSON</div>
+              </div>
+              <p class="muted">This is the first proof point: the app is running and the agent is responding. It shows the product behavior, but not yet whether the agent is reliable enough to trust.</p>
+              <div class="progress-meter result-progress" id="results-progress">
+                <div class="progress-label">
+                  <span id="results-progress-text">Preparing request...</span>
+                  <span id="results-progress-value">0%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="results-progress-fill"></div>
+                </div>
+              </div>
+              <div class="result-content">
+                <div class="spinner"></div>
+                <pre id="result-output" class="result-json">No request submitted yet.</pre>
+              </div>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">How to read the next step</div>
+              </div>
+              <ul class="muted">
+                <li><strong>Responds correctly here:</strong> the example is demonstrably functional</li>
+                <li><strong>Passes TraceCore verification:</strong> the behavior is reliable against the defined standard</li>
+                <li><strong>Fails verification:</strong> use the report as guidance for remediation</li>
+                <li><strong>Passes bundle verification:</strong> the release artifact is ready for stronger trust and certification claims</li>
+                <li><strong>Current repo state:</strong> verification, lint, and tests are all passing</li>
+              </ul>
             </div>
           </div>
-          <div class="results-grid">
-            <article class="result-card">
-        <h3>Live result stream</h3>
-        <div class="status-line">
-          <span class="status-pill">interactive</span>
-          <span>Submissions below are sent to the existing JSON API routes and rendered here for quick inspection.</span>
-        </div>
-        <pre id="result-output">No request submitted yet.</pre>
-            </article>
+        </section>
 
-            <article class="result-card" id="verification">
-        <h3>Verification and runtime notes</h3>
-        <ul class="signal-list">
-          <li>Set <span class="mono">TRACECORE_OPENAI_FAKE_RUNNER=1</span> when you want deterministic local runs without API spend.</li>
-          <li>Run <span class="mono">tracecore-openai-verify</span> to execute the fixed scenario suite and produce a JSON report.</li>
-          <li>Live mode uses the OpenAI Agents SDK directly, so results can vary more than deterministic verification outputs.</li>
-          <li>The current starter repo proves the loop first: <span class="accent-cyan">build</span> -> <span class="accent-pink">try</span> -> <span class="accent-warn">verify</span> -> expand.</li>
-        </ul>
-        <pre>uvicorn tracecore_openai.main:app --reload
+        <section class="tab-panel" data-panel="verify">
+          <div class="grid two">
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">Verification</div>
+              </div>
+              <p class="muted">Step 2 through step 5 of the workflow live here: run deterministic scenarios, inspect reliability evidence, improve the agent if needed, and finish with bundle verification for a certifiable artifact.</p>
+              <ul class="muted">
+                <li>Set <code>TRACECORE_OPENAI_FAKE_RUNNER=1</code> for deterministic local runs without API spend</li>
+                <li>Run <code>tracecore-openai-verify</code> to execute the fixed scenario suite</li>
+                <li>Review <code>deliverables/verification/latest.json</code> as the reliability report for the current agent version</li>
+                <li>If the report fails expectations, modify the agent and rerun the same checks until it passes</li>
+                <li>The latest local run passed verification, pytest, and ruff, so the current next step is bundle sealing</li>
+              </ul>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title">Commands</div>
+              </div>
+              <pre>uvicorn tracecore_openai.main:app --reload
 tracecore-openai-verify
 python -m pytest
-python -m ruff check .</pre>
-            </article>
-          </div>
-        </section>
+python -m ruff check tracecore_openai tests
 
-        <section class="section-card" id="next-steps">
-          <div class="section-header">
-            <div>
-              <div class="section-kicker">Planning forward</div>
-              <h2>Verification meaning and next upgrades</h2>
+tracecore bundle seal --latest
+tracecore bundle verify &lt;bundle_dir&gt;
+tracecore bundle sign &lt;bundle_dir&gt;</pre>
             </div>
           </div>
-          <div class="steps-grid">
-            <article class="panel">
-        <h2>What TraceCore testing is doing here</h2>
-        <p>The starter verification harness is intentionally simple: it runs known prompts through deterministic app mode and confirms that expected outputs or routing hints show up. That gives you a stable baseline before you add more realistic tasks, validators, or benchmark-style run artifacts.</p>
-            </article>
 
-            <article class="panel">
-        <h2>Where this can go next</h2>
-        <p>Once this landing page and workflow feel right, the next upgrades are richer result history, inline verification status cards, scenario browsing, and direct links to generated artifacts so the user can move from demo interaction to evidence without leaving the UI.</p>
-            </article>
+          <div class="panel-card" style="margin-top: 1rem;">
+            <div class="panel-header">
+              <div class="panel-title">What TraceCore Testing Proves</div>
+            </div>
+            <p class="muted">TraceCore testing answers the question a user asks after seeing an agent work once: is this agent actually reliable? The verification harness runs known scenarios through deterministic app mode and checks whether the required outputs or routing decisions appear. A passing result gives evidence of reliability. A failing result gives a concrete target for remediation. After that loop is green, bundle verification gives you the release-time proof for a certified agent artifact.</p>
+          </div>
+
+          <div class="panel-card" style="margin-top: 1rem;">
+            <div class="panel-header">
+              <div class="panel-title">Latest verification summary</div>
+            </div>
+            <div class="grid two">
+              <div>
+                <h3 style="color: var(--accent); margin-bottom: 0.5rem;">Passing evidence</h3>
+                <ul class="muted">
+                  <li><strong>Overall result:</strong> passed</li>
+                  <li><strong>Scenario count:</strong> 5 / 5 passed</li>
+                  <li><strong>Report file:</strong> <code>deliverables/verification/latest.json</code></li>
+                </ul>
+              </div>
+              <div>
+                <h3 style="color: var(--accent-2); margin-bottom: 0.5rem;">Bundle next steps</h3>
+                <ul class="muted">
+                  <li><strong>Seal:</strong> <code>tracecore bundle seal --latest</code></li>
+                  <li><strong>Verify:</strong> <code>tracecore bundle verify &lt;bundle_dir&gt;</code></li>
+                  <li><strong>Sign:</strong> <code>tracecore bundle sign &lt;bundle_dir&gt;</code></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card" style="margin-top: 1rem;">
+            <div class="panel-header">
+              <div class="panel-title">Recommended operator flow</div>
+            </div>
+            <div class="grid two">
+              <div>
+                <h3 style="color: var(--accent); margin-bottom: 0.5rem;">Reliability workflow</h3>
+                <ul class="muted">
+                  <li>Run the app and confirm the agent responds</li>
+                  <li>Run TraceCore verification and inspect the report</li>
+                  <li>Decide whether the current agent meets your standard</li>
+                </ul>
+              </div>
+              <div>
+                <h3 style="color: var(--accent-2); margin-bottom: 0.5rem;">Certification workflow</h3>
+                <ul class="muted">
+                  <li>If verification fails, modify the agent and rerun the same tests</li>
+                  <li>When verification is stable, run bundle verification</li>
+                  <li>Ship the resulting certified agent bundle with evidence attached</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </section>
-      </section>
+      </div>
     </div>
-  </main>
+  </div>
 
   <script>
     const resultOutput = document.getElementById("result-output");
-    const resultsSection = document.getElementById("results");
+    const resultsProgress = document.getElementById("results-progress");
+    const resultsProgressFill = document.getElementById("results-progress-fill");
+    const resultsProgressText = document.getElementById("results-progress-text");
+    const resultsProgressValue = document.getElementById("results-progress-value");
+    const buttons = Array.from(document.querySelectorAll('.tab-btn[data-tab]'));
+    const panels = Array.from(document.querySelectorAll('.tab-panel'));
+
+    function activateTab(tab) {
+      buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+      panels.forEach(panel => panel.classList.toggle('active', panel.dataset.panel === tab));
+      history.replaceState(null, '', '#' + tab);
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetTab = btn.dataset.tab;
+        if (!targetTab) return;
+        activateTab(targetTab);
+      });
+    });
+
+    const hashTab = window.location.hash.replace('#', '');
+    if (hashTab && panels.some(p => p.dataset.panel === hashTab)) {
+      activateTab(hashTab);
+    }
 
     function formatResult(payload) {
       return JSON.stringify(payload, null, 2)
@@ -744,42 +949,55 @@ python -m ruff check .</pre>
         .replace(/\\t/g, "  ");
     }
 
-    function setProgress(form, value, text, state = "active") {
-      const meter = form.querySelector("[data-progress]");
-      const fill = form.querySelector("[data-progress-fill]");
-      const progressText = form.querySelector("[data-progress-text]");
-      const progressValue = form.querySelector("[data-progress-value]");
-      if (!meter || !fill || !progressText || !progressValue) {
-        return;
-      }
-      meter.classList.add("active");
-      meter.classList.remove("done", "error");
-      if (state === "done") {
-        meter.classList.add("done");
-      }
-      if (state === "error") {
-        meter.classList.add("error");
-      }
-      const bounded = Math.max(0, Math.min(100, value));
-      fill.style.width = `${bounded}%`;
-      fill.classList.toggle("is-animating", state === "active" && bounded < 100);
-      progressText.textContent = text;
-      progressValue.textContent = `${Math.round(bounded)}%`;
+    function formatRunTime() {
+      return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
     }
 
-    function startProgressLoop(form) {
+    function setProgress(value, text, state = "active") {
+      if (!resultsProgress || !resultsProgressFill || !resultsProgressText || !resultsProgressValue) return;
+
+      resultsProgress.classList.add("active");
+      resultsProgress.classList.remove("done", "error");
+      if (state === "done") resultsProgress.classList.add("done");
+      if (state === "error") resultsProgress.classList.add("error");
+
+      const bounded = Math.max(0, Math.min(100, value));
+      resultsProgressFill.style.width = `${bounded}%`;
+      resultsProgressText.textContent = text;
+      resultsProgressValue.textContent = `${Math.round(bounded)}%`;
+    }
+
+    function setRunStatus(form, state, detail) {
+      const badge = form.querySelector("[data-run-badge]");
+      const detailNode = form.querySelector("[data-run-detail]");
+      if (!badge || !detailNode) return;
+
+      badge.classList.remove("success", "failure");
+      if (state === "pending") {
+        badge.textContent = "Running";
+      } else if (state === "success") {
+        badge.classList.add("success");
+        badge.textContent = "Success";
+      } else if (state === "failure") {
+        badge.classList.add("failure");
+        badge.textContent = "Failed";
+      } else {
+        badge.textContent = "Idle";
+      }
+      detailNode.textContent = detail;
+    }
+
+    function startProgressLoop() {
       let current = 18;
-      setProgress(form, current, "Preparing request...");
+      setProgress(current, "Preparing request...");
       return window.setInterval(() => {
         current = Math.min(current + Math.random() * 9 + 3, 90);
-        setProgress(form, current, "Waiting for runtime response...");
+        setProgress(current, "Waiting for runtime response...");
       }, 280);
     }
 
     function stopProgressLoop(timerId) {
-      if (timerId) {
-        window.clearInterval(timerId);
-      }
+      if (timerId) window.clearInterval(timerId);
     }
 
     async function handleSubmit(event, endpoint) {
@@ -788,41 +1006,40 @@ python -m ruff check .</pre>
       const formData = new FormData(form);
       const message = String(formData.get("message") || "");
       const submitButton = form.querySelector('button[type="submit"]');
-      if (submitButton) {
-        submitButton.disabled = true;
-      }
-      if (resultsSection) {
-        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-      const progressTimer = startProgressLoop(form);
+
+      if (submitButton) submitButton.disabled = true;
+      activateTab('results');
+      setProgress(0, "Preparing request...");
+
+      const progressTimer = startProgressLoop();
+      setRunStatus(form, "pending", `Started at ${formatRunTime()}. Waiting...`);
       resultOutput.textContent = "Running request...";
 
       try {
-        setProgress(form, 35, "Sending to runtime...");
+        setProgress(35, "Sending to runtime...");
         const response = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message }),
         });
         stopProgressLoop(progressTimer);
-        setProgress(form, 78, "Formatting response...");
+        setProgress(78, "Formatting response...");
         const data = await response.json();
         resultOutput.textContent = formatResult(data);
-        setProgress(form, 100, "Response ready.", "done");
+        setProgress(100, "Response ready.", "done");
+        setRunStatus(form, "success", `Completed at ${formatRunTime()}.`);
       } catch (error) {
         stopProgressLoop(progressTimer);
         resultOutput.textContent = formatResult({ error: String(error) });
-        setProgress(form, 100, "Request failed.", "error");
+        setProgress(100, "Request failed.", "error");
+        setRunStatus(form, "failure", `Failed at ${formatRunTime()}.`);
       } finally {
-        stopProgressLoop(progressTimer);
-        if (submitButton) {
-          submitButton.disabled = false;
-        }
+        if (submitButton) submitButton.disabled = false;
       }
     }
 
-    document.getElementById("chat-form").addEventListener("submit", (event) => handleSubmit(event, "/api/chat-assistant"));
-    document.getElementById("triage-form").addEventListener("submit", (event) => handleSubmit(event, "/api/support-triage"));
+    document.getElementById("chat-form").addEventListener("submit", (e) => handleSubmit(e, "/api/chat-assistant"));
+    document.getElementById("triage-form").addEventListener("submit", (e) => handleSubmit(e, "/api/support-triage"));
   </script>
 </body>
 </html>
