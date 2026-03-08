@@ -4,33 +4,500 @@
   <meta charset="utf-8">
   <title>TraceCore OpenAI</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 2rem auto; max-width: 960px; line-height: 1.5; }
-    h1, h2 { margin-bottom: 0.25rem; }
-    form { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
-    textarea, input, select { width: 100%; padding: 0.6rem; margin-top: 0.35rem; margin-bottom: 0.8rem; }
-    button { padding: 0.7rem 1rem; }
-    .hint { color: #555; font-size: 0.95rem; }
-    .mono { font-family: Consolas, monospace; background: #f6f6f6; padding: 0.15rem 0.3rem; }
+    :root {
+      color-scheme: dark;
+      --bg: #090014;
+      --panel: rgba(10, 18, 34, 0.78);
+      --panel-strong: rgba(20, 28, 52, 0.9);
+      --line: rgba(0, 255, 240, 0.22);
+      --text: #f5f7ff;
+      --muted: #9db2d0;
+      --cyan: #56f6ff;
+      --pink: #ff4fd8;
+      --lime: #b6ff5c;
+      --warn: #ffb347;
+      --shadow: 0 0 30px rgba(86, 246, 255, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      line-height: 1.55;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 79, 216, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(86, 246, 255, 0.16), transparent 30%),
+        linear-gradient(180deg, #06010d 0%, #0a0415 45%, #050913 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+      opacity: 0.2;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero,
+    .panel,
+    .form-card,
+    .result-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero {
+      padding: 28px;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .hero::after {
+      content: "TRACECORE VERIFIED LOOP";
+      position: absolute;
+      right: 20px;
+      top: 18px;
+      color: rgba(86, 246, 255, 0.18);
+      font-size: 12px;
+      letter-spacing: 0.35em;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 79, 216, 0.35);
+      color: var(--pink);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 10px;
+      line-height: 1.15;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      max-width: 820px;
+      text-shadow: 0 0 18px rgba(86, 246, 255, 0.14);
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .hero-copy {
+      max-width: 760px;
+      font-size: 1.05rem;
+    }
+
+    .hero-grid,
+    .info-grid,
+    .apps-grid,
+    .steps-grid,
+    .results-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1.6fr 1fr;
+      align-items: end;
+      gap: 24px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(7, 15, 30, 0.78);
+      border: 1px solid rgba(86, 246, 255, 0.16);
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--text);
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .info-grid,
+    .apps-grid,
+    .steps-grid,
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .panel {
+      border-radius: 22px;
+      padding: 22px;
+    }
+
+    .panel h2 {
+      font-size: 1.25rem;
+      margin-bottom: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(7, 15, 30, 0.9);
+      border: 1px solid rgba(255, 79, 216, 0.2);
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+    .chip strong {
+      color: var(--cyan);
+      font-weight: 700;
+    }
+
+    .app-meta,
+    .step-list,
+    .command-list,
+    .signal-list {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .app-meta li,
+    .step-list li,
+    .command-list li,
+    .signal-list li {
+      margin-bottom: 10px;
+    }
+
+    .form-card,
+    .result-card {
+      border-radius: 22px;
+      padding: 22px;
+    }
+
+    .form-card {
+      background: var(--panel-strong);
+    }
+
+    .form-card h3,
+    .result-card h3 {
+      margin-bottom: 8px;
+      font-size: 1.15rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    textarea,
+    input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(86, 246, 255, 0.22);
+      background: rgba(3, 10, 22, 0.9);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    textarea:focus,
+    input:focus {
+      border-color: rgba(255, 79, 216, 0.7);
+      box-shadow: 0 0 0 3px rgba(255, 79, 216, 0.12);
+      transform: translateY(-1px);
+    }
+
+    button {
+      margin-top: 8px;
+      padding: 0.9rem 1.1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(86, 246, 255, 0.45);
+      background: linear-gradient(135deg, rgba(86, 246, 255, 0.18), rgba(255, 79, 216, 0.24));
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(86, 246, 255, 0.16);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .mono,
+    pre {
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    .mono {
+      display: inline-block;
+      padding: 0.12rem 0.38rem;
+      border-radius: 6px;
+      background: rgba(86, 246, 255, 0.1);
+      color: var(--cyan);
+    }
+
+    pre {
+      margin: 14px 0 0;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(2, 8, 18, 0.95);
+      border: 1px solid rgba(86, 246, 255, 0.14);
+      color: #d9f9ff;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .result-card {
+      min-height: 100%;
+    }
+
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .status-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid rgba(182, 255, 92, 0.35);
+      color: var(--lime);
+      background: rgba(182, 255, 92, 0.08);
+    }
+
+    .accent-pink { color: var(--pink); }
+    .accent-cyan { color: var(--cyan); }
+    .accent-warn { color: var(--warn); }
+
+    @media (max-width: 920px) {
+      .hero-grid,
+      .info-grid,
+      .apps-grid,
+      .steps-grid,
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero::after {
+        position: static;
+        display: block;
+        margin-top: 16px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>TraceCore OpenAI</h1>
-  <p class="hint">FastAPI example apps using the OpenAI Agents SDK with deterministic local verification.</p>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">FastAPI + OpenAI Agents SDK</span>
+          <h1>Cyberpunk example apps with a TraceCore verification loop built in.</h1>
+          <p class="hero-copy">This workspace is meant to feel like a guided proving ground: you run an agent app locally, understand what it is doing, inspect how it responds, and validate deterministic scenarios before you trust the experience.</p>
+          <div class="chips">
+            <span class="chip"><strong>Run</strong> start the FastAPI app locally</span>
+            <span class="chip"><strong>Try</strong> send a prompt through the UI</span>
+            <span class="chip"><strong>Verify</strong> execute deterministic checks</span>
+            <span class="chip"><strong>Inspect</strong> review generated artifacts</span>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <strong>2</strong>
+            <span>example app surfaces live in this starter repo</span>
+          </div>
+          <div class="stat">
+            <strong>5</strong>
+            <span>deterministic verification scenarios currently exercised</span>
+          </div>
+          <div class="stat">
+            <strong>FastAPI</strong>
+            <span>simple local runtime, no Docker required for LLM calls</span>
+          </div>
+          <div class="stat">
+            <strong>TraceCore</strong>
+            <span>verification-first workflow instead of vibes-only demos</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <h2>Chat Assistant</h2>
-  <form method="post" action="/api/chat-assistant">
-    <label for="chat-message">Message</label>
-    <textarea id="chat-message" name="message" rows="4" placeholder="Ask a product or onboarding question"></textarea>
-    <button type="submit">Send to chat assistant</button>
-  </form>
+    <section class="info-grid">
+      <article class="panel">
+        <h2>What you are looking at</h2>
+        <p>This repo adapts OpenAI Agents SDK patterns into app-like examples with a local UX and an explicit validation story. The goal is not just to show prompts working once, but to explain the path from demo behavior to repeatable verification.</p>
+        <ul class="signal-list">
+          <li><span class="accent-cyan">Chat Assistant</span> is a lightweight single-agent surface for onboarding, product guidance, and basic question handling.</li>
+          <li><span class="accent-pink">Support Triage</span> demonstrates multi-agent routing logic for billing, technical, and account-style issues.</li>
+          <li><span class="accent-warn">Deterministic verification mode</span> makes local validation cheap and repeatable before live-model testing.</li>
+        </ul>
+      </article>
 
-  <h2>Support Triage</h2>
-  <form method="post" action="/api/support-triage">
-    <label for="triage-message">Support issue</label>
-    <textarea id="triage-message" name="message" rows="4" placeholder="Describe the issue"></textarea>
-    <button type="submit">Route issue</button>
-  </form>
+      <article class="panel">
+        <h2>TraceCore workflow</h2>
+        <ol class="step-list">
+          <li>Run the app locally with <span class="mono">uvicorn tracecore_openai.main:app --reload</span>.</li>
+          <li>Exercise the routes in this UI to understand the intended behavior.</li>
+          <li>Run <span class="mono">tracecore-openai-verify</span> to execute deterministic scenarios.</li>
+          <li>Inspect <span class="mono">deliverables/verification/latest.json</span> to confirm the expected outputs were observed.</li>
+          <li>Only then move into live OpenAI-backed usage and richer app expansion.</li>
+        </ol>
+      </article>
+    </section>
 
-  <p class="hint">Deterministic verification mode is controlled with <span class="mono">TRACECORE_OPENAI_FAKE_RUNNER=1</span>.</p>
+    <section class="apps-grid">
+      <article class="form-card">
+        <h3>Chat Assistant</h3>
+        <p class="hint">Best for product help, onboarding copy, and showing the simplest OpenAI Agents SDK path.</p>
+        <ul class="app-meta">
+          <li><strong>Pattern:</strong> single agent with tool access</li>
+          <li><strong>Good for:</strong> baseline UX checks and quick verification smoke tests</li>
+          <li><strong>Verification signal:</strong> expected guidance phrases appear for known prompts</li>
+        </ul>
+        <form id="chat-form" method="post" action="/api/chat-assistant">
+          <label for="chat-message">Message</label>
+          <textarea id="chat-message" name="message" rows="5" placeholder="Ask a product, onboarding, or verification question"></textarea>
+          <button type="submit">Run chat assistant</button>
+        </form>
+      </article>
+
+      <article class="form-card">
+        <h3>Support Triage</h3>
+        <p class="hint">Best for showing routing behavior and how app-facing requests can be classified before specialist handling.</p>
+        <ul class="app-meta">
+          <li><strong>Pattern:</strong> triage agent with handoffs</li>
+          <li><strong>Good for:</strong> richer orchestration and user-facing workflow demos</li>
+          <li><strong>Verification signal:</strong> known issues map to billing, technical, or account routes</li>
+        </ul>
+        <form id="triage-form" method="post" action="/api/support-triage">
+          <label for="triage-message">Support issue</label>
+          <textarea id="triage-message" name="message" rows="5" placeholder="Describe the issue like a real end user would"></textarea>
+          <button type="submit">Run support triage</button>
+        </form>
+      </article>
+    </section>
+
+    <section class="results-grid">
+      <article class="result-card">
+        <h3>Live result stream</h3>
+        <div class="status-line">
+          <span class="status-pill">interactive</span>
+          <span>Submissions below are sent to the existing JSON API routes and rendered here for quick inspection.</span>
+        </div>
+        <pre id="result-output">No request submitted yet.</pre>
+      </article>
+
+      <article class="result-card">
+        <h3>Verification and runtime notes</h3>
+        <ul class="signal-list">
+          <li>Set <span class="mono">TRACECORE_OPENAI_FAKE_RUNNER=1</span> when you want deterministic local runs without API spend.</li>
+          <li>Run <span class="mono">tracecore-openai-verify</span> to execute the fixed scenario suite and produce a JSON report.</li>
+          <li>Live mode uses the OpenAI Agents SDK directly, so results can vary more than deterministic verification outputs.</li>
+          <li>The current starter repo proves the loop first: <span class="accent-cyan">build</span> -> <span class="accent-pink">try</span> -> <span class="accent-warn">verify</span> -> expand.</li>
+        </ul>
+        <pre>uvicorn tracecore_openai.main:app --reload
+tracecore-openai-verify
+python -m pytest
+python -m ruff check .</pre>
+      </article>
+    </section>
+
+    <section class="steps-grid">
+      <article class="panel">
+        <h2>What TraceCore testing is doing here</h2>
+        <p>The starter verification harness is intentionally simple: it runs known prompts through deterministic app mode and confirms that expected outputs or routing hints show up. That gives you a stable baseline before you add more realistic tasks, validators, or benchmark-style run artifacts.</p>
+      </article>
+
+      <article class="panel">
+        <h2>Where this can go next</h2>
+        <p>Once this landing page and workflow feel right, the next upgrades are richer result history, inline verification status cards, scenario browsing, and direct links to generated artifacts so the user can move from demo interaction to evidence without leaving the UI.</p>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const resultOutput = document.getElementById("result-output");
+
+    async function handleSubmit(event, endpoint) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+      const message = String(formData.get("message") || "");
+      resultOutput.textContent = "Running request...";
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message }),
+        });
+        const data = await response.json();
+        resultOutput.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultOutput.textContent = JSON.stringify({ error: String(error) }, null, 2);
+      }
+    }
+
+    document.getElementById("chat-form").addEventListener("submit", (event) => handleSubmit(event, "/api/chat-assistant"));
+    document.getElementById("triage-form").addEventListener("submit", (event) => handleSubmit(event, "/api/support-triage"));
+  </script>
 </body>
 </html>
