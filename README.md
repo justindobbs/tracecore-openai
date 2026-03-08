@@ -15,6 +15,15 @@
   - `support_triage`
 - A deterministic local verification flow for app behavior
 
+## Recommended mental model
+
+Use this repo in two modes:
+
+- live mode to see a normal OpenAI Agents app in action
+- deterministic mode to verify behavior repeatedly with the native `tracecore` workflow
+
+The live app helps you evaluate whether the UX is useful. The deterministic mode helps you prove that the app still behaves the way you expect on fixed scenarios without spending API credits on every iteration.
+
 ## Start here if you are evaluating the repo
 
 Read `docs/repo_scope.md` for a short explanation of what this repository demonstrates, what it does not demonstrate, and how it fits TraceCore's core mission as an agent evaluation tool.
@@ -38,7 +47,28 @@ copy .env.example .env
 
 Set `OPENAI_API_KEY` in your environment or `.env` loader of choice.
 
-If you installed `tracecore` in a different environment, make sure the `tracecore` command is available in your shell before running bundle commands from this repo.
+This install also brings in `tracecore>=1.1.2`, so the `tracecore` command should be available in the same environment.
+
+## Recommended first run
+
+Follow this sequence the first time you open the repo:
+
+```bash
+uvicorn tracecore_openai.main:app --reload
+```
+
+Open `http://127.0.0.1:8000` and try both example routes so you can see the app in normal hosted mode first.
+
+Then switch to deterministic verification mode:
+
+```bash
+set TRACECORE_OPENAI_FAKE_RUNNER=1
+tracecore run --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --seed 0
+tracecore verify --latest
+tracecore bundle seal --latest
+```
+
+That is the core TraceCore loop this repo is meant to teach.
 
 ## Run the app
 
@@ -51,6 +81,8 @@ Open `http://127.0.0.1:8000`.
 ## Deterministic verification
 
 The verification harness runs the app in a fake deterministic mode so you can validate behavior without spending API credits while staying inside the native TraceCore workflow.
+
+This is intentional. The fake runner is not trying to replace the real OpenAI Agents SDK path. It gives you a repeatable evaluation mode so you can inspect, diff, and bundle behavior in a way that is stable enough for local regression checks.
 
 ```bash
 set TRACECORE_OPENAI_FAKE_RUNNER=1
@@ -70,7 +102,9 @@ tracecore runs summary --limit 5
 
 ## Real OpenAI Agents mode
 
-By default, the app uses the OpenAI Agents SDK. For deterministic tests, set:
+By default, the app uses the OpenAI Agents SDK. Use this mode when you want to interact with the app normally and validate that the product experience makes sense.
+
+For deterministic verification and local regression checks, set:
 
 ```bash
 set TRACECORE_OPENAI_FAKE_RUNNER=1
@@ -86,8 +120,13 @@ set TRACECORE_OPENAI_FAKE_RUNNER=1
 ## Suggested workflow
 
 ```bash
+# 1. Run the app in hosted mode
 uvicorn tracecore_openai.main:app --reload
 
+# 2. Switch to deterministic verification mode
+set TRACECORE_OPENAI_FAKE_RUNNER=1
+
+# 3. Run the native TraceCore loop
 tracecore run --agent agents/chat_assistant_agent.py --task chat_assistant_example@1 --seed 0
 tracecore verify --latest
 tracecore inspect --run <run_id>
@@ -100,3 +139,14 @@ tracecore bundle seal --latest
 pytest
 ruff check .
 ```
+
+## How this maps to your own repo
+
+This repo is meant to be copied conceptually, not literally. The reusable pattern is:
+
+- keep your normal OpenAI Agents app surface
+- add a deterministic verification mode for fixed scenarios
+- expose TraceCore-compatible agent adapters for those scenarios
+- register repo-local tasks so `tracecore` can run them naturally
+
+If you want the broader explanation from the main TraceCore repo, see the OpenAI Agents onboarding guide there.
